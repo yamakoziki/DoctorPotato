@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>じゃがいもマスター 農家技術評価</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1008;
+  --soil-dark: #3d2008;
+  --soil: #6b3a1f;
+  --soil-mid: #9c5a2e;
+  --earth: #c8843e;
+  --gold: #d4a843;
+  --straw: #e8d4a0;
+  --cream: #faf6ec;
+  --paper: #f4ede0;
+  --green-dark: #1e4a18;
+  --green: #2e6b25;
+  --green-light: #5a9e48;
+  --leaf: #8cc05a;
+  --sky-top: #4a7fb5;
+  --sky-mid: #7aa8cc;
+  --snow: #e8f0f8;
+  --mtn1: #8fa5be;
+  --mtn2: #b8ccd8;
+  --mtn3: #d0dde8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ======== SCREENS ======== */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; }
+
+/* ======== HIMALAYA HEADER ======== */
+.himalaya {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(180deg, #2b5496 0%, #4a7fb5 35%, #7aa8cc 65%, #c8b898 100%);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.himalaya-snow {
+  position: absolute; bottom: 40px; left: -5%; right: -5%;
+  height: 110px;
+  background: #e8f0f8;
+  clip-path: polygon(0% 100%, 5% 45%, 13% 65%, 22% 18%, 31% 52%, 40% 8%, 50% 42%, 58% 12%, 66% 48%, 74% 22%, 82% 55%, 90% 28%, 95% 58%, 100% 38%, 100% 100%);
+}
+.himalaya-rock {
+  position: absolute; bottom: 0; left: -5%; right: -5%;
+  height: 80px;
+  background: var(--mtn1);
+  clip-path: polygon(0% 100%, 7% 55%, 16% 72%, 27% 30%, 38% 62%, 49% 20%, 60% 55%, 70% 32%, 80% 60%, 90% 38%, 100% 65%, 100% 100%);
+}
+.himalaya-field {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 35px;
+  background: linear-gradient(180deg, var(--green-dark) 0%, #2a5c22 100%);
+}
+.himalaya-title {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding-bottom: 20px;
+}
+.himalaya-title .app-icon {
+  font-size: 44px;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.3));
+  animation: bob 3.5s ease-in-out infinite;
+}
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+.himalaya-title h1 {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 20px;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+.himalaya-title p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.8);
+  margin-top: 3px;
+  letter-spacing: 2px;
+}
+
+/* ======== CARDS ======== */
+.card {
+  background: white;
+  border-radius: 18px;
+  margin: 14px 14px 0;
+  padding: 20px;
+  box-shadow: 0 3px 16px rgba(107,58,31,0.1), 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid rgba(200,132,62,0.12);
+}
+.card-head {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 15px;
+  color: var(--soil);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ======== EMAIL INPUT ======== */
+.field-label {
+  font-size: 12px; font-weight: 500;
+  color: var(--soil-mid); margin-bottom: 7px; display: block;
+  letter-spacing: 0.5px;
+}
+.text-input {
+  width: 100%; padding: 13px 15px;
+  border: 2px solid var(--straw);
+  border-radius: 12px;
+  font-size: 15px; font-family: inherit;
+  background: var(--paper); color: var(--ink);
+  outline: none; transition: all 0.2s;
+}
+.text-input:focus { border-color: var(--earth); background: white; box-shadow: 0 0 0 4px rgba(200,132,62,0.1); }
+
+/* ======== EVALUATOR INFO ======== */
+.evaluator-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;
+}
+.evaluator-row.full { grid-template-columns: 1fr; }
+
+/* ======== CATEGORY SELECTOR ======== */
+.cat-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 9px;
+}
+.cat-card {
+  padding: 12px 10px;
+  background: var(--paper);
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer; text-align: center;
+  transition: all 0.2s; user-select: none;
+}
+.cat-card.on { background: #fff8ed; border-color: var(--earth); }
+.cat-card:active { transform: scale(0.96); }
+.cat-card .c-icon { font-size: 26px; display: block; margin-bottom: 5px; }
+.cat-card .c-name { font-size: 12px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+.cat-card .c-sub { font-size: 10px; color: var(--soil-mid); margin-top: 2px; opacity: 0.8; }
+.cat-card .c-chk {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #ccc; background: white;
+  margin: 6px auto 0; transition: all 0.2s;
+}
+.cat-card.on .c-chk { background: var(--green); border-color: var(--green); }
+
+/* ======== START BTN ======== */
+.btn-start {
+  display: block; width: calc(100% - 28px);
+  margin: 16px 14px 24px;
+  padding: 18px; border: none; border-radius: 16px;
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: white; font-size: 17px;
+  font-family: 'Zen Antique Soft', serif;
+  letter-spacing: 2px; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(30,74,24,0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-start:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(30,74,24,0.3); }
+
+/* ======== QUESTION SCREEN ======== */
+.q-hero {
+  background: linear-gradient(160deg, var(--soil-dark) 0%, var(--soil) 60%, var(--soil-mid) 100%);
+  padding: 60px 18px 26px;
+  position: relative; overflow: hidden;
+}
+.q-hero::after {
+  content: '';
+  position: absolute; bottom: -16px; left: -5%; right: -5%;
+  height: 32px; background: var(--cream);
+  border-radius: 50%; z-index: 2;
+}
+.q-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; position: relative; z-index: 1;
+}
+.q-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.18); backdrop-filter: blur(6px);
+  color: white; font-size: 12px; padding: 5px 12px; border-radius: 20px;
+}
+.q-counter {
+  font-size: 12px; color: rgba(255,255,255,0.7);
+}
+.q-progress {
+  height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;
+  margin-bottom: 18px; overflow: hidden; position: relative; z-index: 1;
+}
+.q-progress-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 2px; transition: width 0.5s ease;
+}
+.q-text {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 18px; line-height: 1.65;
+  color: white; position: relative; z-index: 1;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.q-difficulty {
+  display: inline-block;
+  font-size: 10px; color: var(--gold);
+  letter-spacing: 1px; margin-bottom: 10px;
+  position: relative; z-index: 1;
+}
+
+/* ======== OPTIONS ======== */
+.options-wrap { padding: 28px 14px 10px; }
+.opt-btn {
+  display: flex; align-items: center; gap: 13px;
+  width: 100%; padding: 15px 16px; margin-bottom: 10px;
+  background: white; border: 2px solid #eee6d8;
+  border-radius: 14px; cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 14px;
+  color: var(--ink); text-align: left; line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.18s;
+}
+.opt-btn:active { transform: scale(0.98); }
+.opt-btn.chosen { border-color: var(--earth); background: #fff8ee; }
+.opt-btn.correct-ans { border-color: var(--green); background: #eef7eb; }
+.opt-btn.wrong-ans { border-color: #d95050; background: #fff0f0; }
+.opt-lbl {
+  min-width: 30px; height: 30px; border-radius: 50%;
+  background: var(--paper); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--soil);
+  transition: all 0.18s; flex-shrink: 0;
+}
+.opt-btn.chosen .opt-lbl { background: var(--earth); color: white; }
+.opt-btn.correct-ans .opt-lbl { background: var(--green); color: white; }
+.opt-btn.wrong-ans .opt-lbl { background: #d95050; color: white; }
+
+/* ======== FEEDBACK ======== */
+.feedback-box {
+  margin: 0 14px 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 13px; line-height: 1.75;
+  border-left: 4px solid;
+  animation: fadein 0.3s ease;
+}
+@keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.feedback-box.ok { background: #eef7eb; border-color: var(--green); color: #1a4016; }
+.feedback-box.ng { background: #fff0f0; border-color: #d95050; color: #5c1010; }
+.feedback-title { font-weight: 700; margin-bottom: 4px; font-size: 14px; }
+.btn-next {
+  display: block; width: calc(100% - 28px);
+  margin: 0 14px 20px; padding: 16px;
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: white; border: none; border-radius: 14px;
+  font-size: 15px; font-family: 'Noto Sans JP', sans-serif; font-weight: 500;
+  cursor: pointer; letter-spacing: 1px;
+  box-shadow: 0 6px 18px rgba(30,74,24,0.3);
+  transition: transform 0.15s;
+}
+.btn-next:active { transform: scale(0.97); }
+.back-btn {
+  position: fixed; top: 14px; left: 14px; z-index: 100;
+  background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+  border: none; color: white; font-size: 13px;
+  padding: 8px 14px; border-radius: 20px; cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* ======== RESULTS ======== */
+.result-hero {
+  background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 55%, var(--green-light) 100%);
+  padding: 56px 20px 50px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.result-hero::before {
+  content: ''; position: absolute;
+  top: -30px; right: -30px;
+  width: 160px; height: 160px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+}
+.result-hero::after {
+  content: ''; position: absolute;
+  bottom: -18px; left: -5%; right: -5%;
+  height: 36px; background: var(--cream);
+  border-radius: 50%; z-index: 2;
+}
+.result-hero-label { font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 3px; margin-bottom: 8px; }
+.result-hero-title {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 20px; color: white; margin-bottom: 18px; line-height: 1.5;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.score-ring {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 3px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(10px);
+  margin-bottom: 14px;
+}
+.score-big {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 42px; color: white; line-height: 1;
+}
+.score-denom { font-size: 13px; color: rgba(255,255,255,0.75); }
+.evaluatee-name {
+  font-size: 16px; color: rgba(255,255,255,0.9);
+  font-weight: 500; letter-spacing: 1px;
+}
+
+/* ======== LEVEL ======== */
+.level-wrap { text-align: center; padding: 4px 0 8px; }
+.level-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: 30px;
+  font-size: 15px; font-weight: 600;
+  margin-bottom: 8px; border: 2px solid;
+}
+.lv5 { background: #fff8e1; color: #b8860b; border-color: #d4a843; } /* Outstanding */
+.lv4 { background: #e8f5e9; color: #1b5e20; border-color: #4caf50; } /* Excellent */
+.lv3 { background: #e3f2fd; color: #0d47a1; border-color: #1976d2; } /* Good */
+.lv2 { background: #fff3e0; color: #bf360c; border-color: #f57c00; } /* Needs Improvement */
+.lv1 { background: #fce4ec; color: #880e4f; border-color: #c2185b; } /* Unsatisfactory */
+
+/* ======== BAR CHART ======== */
+.bar-row { margin-bottom: 15px; }
+.bar-row-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.bar-label {
+  font-size: 13px; color: var(--ink); font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+.bar-pct { font-size: 13px; font-weight: 700; color: var(--soil); }
+.bar-track {
+  height: 10px; background: #f0e8d4;
+  border-radius: 5px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; border-radius: 5px; width: 0%;
+  transition: width 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ======== COMMENT BLOCK ======== */
+.comment-panel {
+  background: linear-gradient(135deg, #fffcf2, #fff8e8);
+  border-left: 5px solid var(--earth);
+  border-radius: 0 14px 14px 0;
+  padding: 15px 17px; margin-top: 10px;
+}
+.comment-panel p { font-size: 13px; line-height: 1.85; color: var(--ink); }
+.comment-panel strong { color: var(--soil); }
+
+/* ======== ADVICE ======== */
+.adv-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 13px; background: var(--paper);
+  border-radius: 12px; margin-bottom: 9px;
+}
+.adv-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.adv-body { font-size: 13px; line-height: 1.75; }
+.adv-title { font-weight: 700; color: var(--green-dark); font-size: 14px; display: block; margin-bottom: 3px; }
+
+/* ======== REPORT TABLE (like evaluation-system) ======== */
+.report-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.report-table th {
+  background: var(--soil); color: white;
+  padding: 8px 10px; text-align: left; font-weight: 500;
+}
+.report-table td {
+  padding: 9px 10px; border-bottom: 1px solid #f0e8d4;
+  vertical-align: middle;
+}
+.report-table tr:last-child td { border-bottom: none; }
+.report-table tr:nth-child(even) td { background: #faf6ec; }
+.mini-bar { height: 6px; border-radius: 3px; background: #eee; overflow: hidden; }
+.mini-bar-fill { height: 100%; border-radius: 3px; }
+
+/* ======== EMAIL CARD ======== */
+.email-card-inner { text-align: center; }
+.email-note { font-size: 12px; color: var(--soil-mid); margin-bottom: 14px; }
+.btn-mail {
+  width: 100%; padding: 15px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, var(--soil-dark), var(--soil));
+  color: white; font-size: 15px; font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer; letter-spacing: 1px;
+  box-shadow: 0 6px 18px rgba(61,32,8,0.3);
+  transition: transform 0.15s;
+}
+.btn-mail:active { transform: scale(0.97); }
+.btn-mail:disabled { opacity: 0.6; }
+.sent-notice {
+  display: none; padding: 12px; background: #e8f5e9;
+  border-radius: 10px; font-size: 13px; color: var(--green-dark);
+}
+.sent-notice.show { display: block; }
+
+.btn-restart {
+  display: block; width: calc(100% - 28px);
+  margin: 10px 14px 30px; padding: 15px;
+  background: transparent; border: 2px solid var(--earth);
+  border-radius: 14px; color: var(--soil);
+  font-size: 14px; font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer; letter-spacing: 1px;
+  transition: background 0.15s;
+}
+.btn-restart:active { background: rgba(200,132,62,0.08); }
+
+/* ======== TOAST ======== */
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(70px);
+  background: var(--soil-dark); color: white;
+  padding: 12px 22px; border-radius: 30px;
+  font-size: 14px; white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  z-index: 999; transition: transform 0.3s ease;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.mt14 { margin-top: 14px; }
+.pb30 { padding-bottom: 30px; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== SCREEN: START ===== -->
+<div class="screen active" id="s-start">
+  <div class="himalaya">
+    <div class="himalaya-snow"></div>
+    <div class="himalaya-rock"></div>
+    <div class="himalaya-field"></div>
+    <div class="himalaya-title">
+      <span class="app-icon">🥔</span>
+      <h1>じゃがいもマスター</h1>
+      <p>NEPAL FARMER SKILL ASSESSMENT</p>
+    </div>
+  </div>
+
+  <!-- Evaluator Info -->
+  <div class="card">
+    <div class="card-head">📝 評価情報の入力</div>
+    <div class="evaluator-row">
+      <div>
+        <label class="field-label">農家名・氏名</label>
+        <input class="text-input" id="inp-name" type="text" placeholder="例：Ramesh Thapa">
+      </div>
+      <div>
+        <label class="field-label">地区・村名</label>
+        <input class="text-input" id="inp-village" type="text" placeholder="例：Jumla">
+      </div>
+    </div>
+    <div class="evaluator-row full">
+      <label class="field-label">📧 メールアドレス（任意）</label>
+      <input class="text-input" id="inp-email" type="email" placeholder="結果レポートをメールで受け取る場合のみ">
+    </div>
+    <p style="font-size:11px;color:var(--soil-mid);margin-top:6px;opacity:0.8;">※ メールはお使いのメールアプリから送信されます</p>
+  </div>
+
+  <!-- Category selector -->
+  <div class="card mt14">
+    <div class="card-head">🌾 評価カテゴリ（10項目）</div>
+    <div class="cat-grid" id="catGrid">
+      <div class="cat-card on" data-cat="soil" onclick="toggleCat(this)">
+        <span class="c-icon">🌱</span>
+        <div class="c-name">土壌管理</div>
+        <div class="c-sub">pH・耕起・堆肥</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="seed" onclick="toggleCat(this)">
+        <span class="c-icon">🌿</span>
+        <div class="c-name">種芋準備</div>
+        <div class="c-sub">品種・催芽・消毒</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="planting" onclick="toggleCat(this)">
+        <span class="c-icon">🪣</span>
+        <div class="c-name">植え付け</div>
+        <div class="c-sub">深さ・株間・時期</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="fertilizer" onclick="toggleCat(this)">
+        <span class="c-icon">💧</span>
+        <div class="c-name">施肥・灌水</div>
+        <div class="c-sub">NPK・水管理</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="pest" onclick="toggleCat(this)">
+        <span class="c-icon">🐛</span>
+        <div class="c-name">病害虫対策</div>
+        <div class="c-sub">疫病・アブラムシ</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="hilling" onclick="toggleCat(this)">
+        <span class="c-icon">⛏️</span>
+        <div class="c-name">培土・除草</div>
+        <div class="c-sub">土寄せ・雑草管理</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="harvest" onclick="toggleCat(this)">
+        <span class="c-icon">🥔</span>
+        <div class="c-name">収穫・判断</div>
+        <div class="c-sub">適期・損傷防止</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="storage" onclick="toggleCat(this)">
+        <span class="c-icon">🏚️</span>
+        <div class="c-name">貯蔵・出荷</div>
+        <div class="c-sub">キュアリング・保存</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="marketing" onclick="toggleCat(this)">
+        <span class="c-icon">💰</span>
+        <div class="c-name">販売・市場</div>
+        <div class="c-sub">価格・流通・交渉</div>
+        <div class="c-chk"></div>
+      </div>
+      <div class="cat-card on" data-cat="learning" onclick="toggleCat(this)">
+        <span class="c-icon">📚</span>
+        <div class="c-name">技術学習</div>
+        <div class="c-sub">情報収集・研修</div>
+        <div class="c-chk"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startAssessment()">🚜 評価を開始する</button>
+</div>
+
+<!-- ===== SCREEN: QUESTION ===== -->
+<div class="screen" id="s-question">
+  <button class="back-btn" onclick="confirmBack()">← 戻る</button>
+  <div class="q-hero" id="qHero">
+    <div class="q-meta">
+      <span class="q-badge" id="qBadge">🌱 土壌管理</span>
+      <span class="q-counter" id="qCounter">1 / 16</span>
+    </div>
+    <div class="q-progress"><div class="q-progress-fill" id="qProg"></div></div>
+    <div class="q-difficulty" id="qDiff">★☆☆ 基礎</div>
+    <div class="q-text" id="qText">問題テキスト</div>
+  </div>
+  <div class="options-wrap" id="optWrap"></div>
+  <div id="feedbackWrap" style="display:none;">
+    <div class="feedback-box" id="fbBox"></div>
+    <button class="btn-next" id="btnNext" onclick="nextQ()">次の問題へ →</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: RESULTS ===== -->
+<div class="screen pb30" id="s-results">
+  <div class="result-hero">
+    <div class="result-hero-label">SKILL ASSESSMENT REPORT</div>
+    <div class="result-hero-title">ジャガイモ栽培<br>技術診断レポート</div>
+    <div class="score-ring">
+      <div class="score-big" id="rScoreBig">--</div>
+      <div class="score-denom">/ 100点</div>
+    </div>
+    <div class="evaluatee-name" id="rName"></div>
+  </div>
+
+  <!-- Level -->
+  <div class="card mt14" style="text-align:center;">
+    <div class="card-head" style="justify-content:center;">🏆 総合評価レベル</div>
+    <div class="level-wrap">
+      <div id="levelPill"></div>
+      <div id="levelSub" style="font-size:12px;color:var(--soil-mid);margin-top:4px;"></div>
+    </div>
+    <div class="comment-panel" id="overallComment"></div>
+  </div>
+
+  <!-- Detail table (evaluation-system style) -->
+  <div class="card mt14">
+    <div class="card-head">📊 カテゴリ別スコア詳細</div>
+    <table class="report-table" id="reportTable">
+      <tr><th>評価項目</th><th>正解</th><th>スコア</th><th>進捗</th></tr>
+    </table>
+  </div>
+
+  <!-- Bar chart visual -->
+  <div class="card mt14">
+    <div class="card-head">📈 技術レベル分布</div>
+    <div id="barChart"></div>
+  </div>
+
+  <!-- Advice -->
+  <div class="card mt14">
+    <div class="card-head">🌾 次のステップ・アドバイス</div>
+    <div id="adviceWrap"></div>
+  </div>
+
+  <!-- Email -->
+  <div class="card mt14" id="emailCard">
+    <div class="card-head">📬 結果レポートをメールで受け取る</div>
+    <div class="email-card-inner">
+      <p class="email-note" id="emailNote"></p>
+      <button class="btn-mail" id="btnMail" onclick="sendMail()">📧 メールアプリで送信する</button>
+      <div class="sent-notice" id="sentNotice">✅ メールアプリが開きました。送信して完了です。</div>
+    </div>
+  </div>
+
+  <button class="btn-restart" onclick="restartAll()">🔄 もう一度評価する</button>
+</div>
+
+<script>
+// ============================================================
+// QUESTION DATABASE — 8 categories × 3 questions
+// (mirrors evaluation-system's 8-criteria structure)
+// ============================================================
+const DB = {
+  soil: {
+    name: '土壌管理', icon: '🌱', color: '#5a9e48',
+    qs: [
+      { lv:1, q:'ジャガイモに最適な土壌pHはどれですか？',
+        opts:['pH 4.0未満（強酸性）','pH 5.0〜6.5（弱酸性）','pH 7.5〜8.5（アルカリ性）','pHは関係ない'],
+        ans:1, exp:'pH 5.0〜6.5が最適です。pH7以上ではそうか病が多発し、pH4未満だと肥料の吸収が阻害されます。' },
+      { lv:2, q:'深耕（25〜30cm）を行う最も重要な目的は？',
+        opts:['見た目を整えるため','水の蒸発を促すため','塊茎が十分に肥大するスペースを確保するため','雑草の種を地中に埋めるため'],
+        ans:2, exp:'塊茎は土中で膨らみます。浅い土壌では変形・小いもになります。深耕で通気性・排水性も向上します。' },
+      { lv:3, q:'作付け前の堆肥施用が土壌に与える最大の効果は？',
+        opts:['土の色を黒くするため','有機物を増やし保水性・通気性・微生物活性を高めるため','土を硬く締めるため','土のpHを下げるため'],
+        ans:1, exp:'堆肥の有機物は土壌微生物の活性化、保水・排水バランス改善、徐放性養分供給を同時に実現します。' }
+    ]
+  },
+  seed: {
+    name: '種芋準備', icon: '🌿', color: '#4a8c3f',
+    qs: [
+      { lv:1, q:'種芋の催芽に適した温度・場所の組み合わせはどれですか？',
+        opts:['5℃以下の暗所','15〜20℃の明るい散光下','35℃以上の高温直射日光','温度に関係なく暗所'],
+        ans:1, exp:'15〜20℃・散光のある明るい場所で催芽することで、緑化した短く強健な芽が育ちます。' },
+      { lv:2, q:'種芋切断面のコルク化（乾燥処理）の主な目的は？',
+        opts:['種芋の重さを軽くするため','切り口への病原菌侵入を防ぐため','水分を多く吸収するため','芽の出る方向を決めるため'],
+        ans:1, exp:'切断面を2〜3日乾燥させるか木灰・殺菌剤を塗ることで、腐敗の主因となる菌の侵入を大幅に防げます。' },
+      { lv:3, q:'認定種芋（Certified Seed）を自家採種種芋より推奨する主な理由は？',
+        opts:['値段が安いから','ウイルス病検査済みで病気が少なく、収量が安定するから','必ず2倍の収量が得られるから','農薬が不要になるから'],
+        ans:1, exp:'認定種芋はウイルス等の病気が除去されています。ウイルスによる収量損失は最大50%以上になることもあります。' }
+    ]
+  },
+  planting: {
+    name: '植え付け', icon: '🪣', color: '#7ab648',
+    qs: [
+      { lv:1, q:'ネパール中山地でジャガイモを春作する一般的な植え付け時期はいつですか？',
+        opts:['12月〜1月（冬の寒い時期）','2月〜4月（春・気温上昇期）','7月〜8月（雨季の盛り）','10月〜11月（秋）'],
+        ans:1, exp:'春作は2〜4月が一般的です。晩霜後に植え付け、いも肥大期に低温・雨が当たるよう時期を調整します。' },
+      { lv:2, q:'種芋の植え付け深さとして一般的に推奨されるのは？',
+        opts:['2〜3cm（ほぼ地表）','8〜12cm（適切な深さ）','20cm以上（非常に深い）','地面に置くだけ'],
+        ans:1, exp:'8〜12cmが標準です。浅すぎると緑化・凍害リスク、深すぎると出芽遅延・腐敗リスクが高まります。' },
+      { lv:3, q:'株間30cm・畝間70cmを守る最も重要な理由は？',
+        opts:['農薬を節約するため','適切な光・通風・根の張りを確保し収量を最大化するため','機械作業を楽にするため','水が溜まりやすくするため'],
+        ans:1, exp:'適切な株間で葉のオーバーラップを防ぎ、光合成効率を最大化。密植は収量低下・病害多発につながります。' }
+    ]
+  },
+  fertilizer: {
+    name: '施肥・灌水', icon: '💧', color: '#3a8fd4',
+    qs: [
+      { lv:1, q:'ジャガイモの塊茎肥大に最も重要な多量栄養素はどれですか？',
+        opts:['窒素（N）—茎葉を増やす','リン酸（P）—根の発達に必須','カリウム（K）—糖の転流・いも肥大','カルシウム（Ca）—細胞壁強化'],
+        ans:2, exp:'カリウムは糖・デンプンの転流（葉からいもへの移動）に直結します。施用不足はいもが小さく品質が下がります。' },
+      { lv:2, q:'窒素過多施用がジャガイモに引き起こす最も典型的な問題は？',
+        opts:['葉が黄化して枯れる','茎葉が過剰繁茂し、いもが形成されにくくなる','塊茎の数が倍増する','病気がなくなる'],
+        ans:1, exp:'窒素過多は栄養生長（茎葉伸長）を優先させ、いもへの光合成産物の蓄積が妨げられます（奢長）。' },
+      { lv:3, q:'乾期の灌水として最も効率的なタイミングと方法は？',
+        opts:['真昼の直射日光下で葉面散水','早朝または夕方に根元への点滴・溝灌水','深夜のみに空中散布','降雨直前に大量灌水'],
+        ans:1, exp:'早朝・夕方は蒸散ロスが最小。根元灌水で根に直接水を届け、葉濡れによる病害も防げます。' }
+    ]
+  },
+  pest: {
+    name: '病害虫対策', icon: '🐛', color: '#e07b2a',
+    qs: [
+      { lv:1, q:'ジャガイモ疫病（Late Blight）が最も多発する気象条件は？',
+        opts:['高温乾燥（35℃以上、湿度30%以下）','冷涼多湿（15〜20℃、霧や雨が続く）','強風の晴天','真冬の凍結期'],
+        ans:1, exp:'疫病菌Phytophthora infestansは15〜20℃・高湿度で爆発的に増殖します。霧・雨の多い時期の予防散布が必須です。' },
+      { lv:2, q:'アブラムシがジャガイモ種芋生産で特に深刻な理由は？',
+        opts:['葉を食べて光合成を妨げるから','PVY等のウイルス病を株から株へ伝播するから','土の中でいもを直接食べるから','塊茎の色を変えるから'],
+        ans:1, exp:'アブラムシはウイルスのベクター（媒介者）です。わずか数匹でも圃場全体にウイルスが広がるため、徹底防除が必要です。' },
+      { lv:3, q:'連作（同じ畑で毎年ジャガイモを作ること）を避ける主な理由は？',
+        opts:['土壌が肥えすぎるから','土壌病害虫（そうか病菌・シストセンチュウ等）が蓄積し収量が低下するから','水の使用量が増えるから','特に問題はない'],
+        ans:1, exp:'3〜4年輪作することで土壌病原菌密度が自然低下します。アブラナ科・マメ科との輪作が特に効果的です。' }
+    ]
+  },
+  hilling: {
+    name: '培土・除草', icon: '⛏️', color: '#9c7a3e',
+    qs: [
+      { lv:1, q:'「培土（土寄せ）」を行う最も重要な目的は何ですか？',
+        opts:['見た目をよくするため','塊茎の緑化を防ぎ、新しいいも着生スペースを増やすため','灌水量を減らすため','根の水分吸収を止めるため'],
+        ans:1, exp:'塊茎が地表に出ると光を受けて緑化（ソラニン増加）します。培土で覆土することで緑化防止と着いも数の増加が同時に達成できます。' },
+      { lv:2, q:'培土（土寄せ）の適切な時期はいつですか？',
+        opts:['植え付け直後（芽が出る前）','茎の高さが15〜20cmになった頃（出芽後2〜3週）','いもが肥大し始めた頃（開花期）','収穫直前'],
+        ans:1, exp:'出芽後2〜3週・茎高15〜20cmが適期です。この時期の培土が最もいも数増加に効果的です。' },
+      { lv:3, q:'雑草管理でマルチングを使う主な利点は？',
+        opts:['収穫が楽になるから','地温維持・保湿・雑草抑制を同時に達成できるから','肥料が不要になるから','病気が完全になくなるから'],
+        ans:1, exp:'ワラや黒色ポリフィルムのマルチは、雑草抑制・土壌水分保持・地温調節を一度に行います。' }
+    ]
+  },
+  harvest: {
+    name: '収穫・判断', icon: '🥔', color: '#c8843e',
+    qs: [
+      { lv:1, q:'ジャガイモの収穫適期を判断する最も確実なサインは？',
+        opts:['植え付けから丸60日が経過した','地上部（茎葉）が自然に黄変・枯死した','花が咲いた','いもの色が変わった'],
+        ans:1, exp:'地上部の自然枯死は養分転流完了のサインです。枯死後1〜2週間置くことで皮が硬くなり貯蔵性が向上します。' },
+      { lv:2, q:'収穫時の機械・手具による塊茎損傷（打撲・切断）を減らすために最も重要なことは？',
+        opts:['高温乾燥期に収穫する','土壌が適度に湿った状態（雨の翌日等）で収穫し、慎重に扱う','なるべく速く収穫する','収穫後すぐに出荷する'],
+        ans:1, exp:'過乾燥や過湿の土壌は損傷を増やします。収穫後の打撲傷は腐敗の主因になるため、丁寧な取り扱いが重要です。' },
+      { lv:3, q:'収穫後に高温・日光が当たる場所に放置するとどうなりますか？',
+        opts:['糖度が上がって美味しくなる','塊茎が緑化してソラニン（有毒物質）が増加する','水分が飛んで保存しやすくなる','でんぷんが増える'],
+        ans:1, exp:'光に当たると緑化が起き有毒アルカロイド（ソラニン）が増加します。食用・種芋どちらも品質低下につながります。' }
+    ]
+  },
+  storage: {
+    name: '貯蔵・出荷', icon: '🏚️', color: '#7a5c2e',
+    qs: [
+      { lv:1, q:'ジャガイモの長期貯蔵に最適な環境はどれですか？',
+        opts:['高温多湿（25℃以上）','冷涼暗所（4〜8℃・湿度85〜90%）','冷凍（0℃以下）','直射日光の当たる通風の良い場所'],
+        ans:1, exp:'4〜8℃・暗所・やや高湿度が最適です。冷凍はでんぷんを糖化させ品質が落ちます。光は緑化を引き起こします。' },
+      { lv:2, q:'「キュアリング（curing）」とはどのような処理ですか？',
+        opts:['農薬で消毒すること','収穫後に15〜20℃・高湿度で1〜2週間置き、傷口にコルク層を形成させること','低温で急速冷却すること','水洗いして乾燥させること'],
+        ans:1, exp:'キュアリングで傷口がコルク化し、貯蔵中の腐敗・水分蒸散が大幅に減少します。特に傷の多い収穫後は必須の処理です。' },
+      { lv:3, q:'出荷前に選別・等級分け（グレーディング）を行う主な目的は？',
+        opts:['作業量を増やすため','市場での価格向上・クレーム防止・ブランド確立のため','全量が同一価格になるため','腐敗を完全になくすため'],
+        ans:1, exp:'大きさ・形・病傷の有無による選別は、高品質ロットの価格プレミアムを獲得し、農家の収入向上に直結します。' }
+    ]
+  },
+  marketing: {
+    name: '販売・市場', icon: '💰', color: '#c0392b',
+    qs: [
+      { lv:1, q:'収穫直後に急いで全量を市場に出すことの主なデメリットは何ですか？',
+        opts:['輸送コストが下がる','収穫期に供給が集中して価格が暴落しやすい','品質が上がる','バイヤーに喜ばれる'],
+        ans:1, exp:'収穫期は農家が一斉に出荷するため市場が供給過多になり、価格が大きく下落します。貯蔵や出荷時期の分散が収入安定に有効です。' },
+      { lv:2, q:'農家グループ（協同組合）で共同出荷する最大のメリットは何ですか？',
+        opts:['全員が同じ品種を作らなければならない','まとまった量で交渉力が高まり、輸送コスト削減・有利な価格交渉が可能になる','個人より手続きが面倒になる','補助金が必ずもらえる'],
+        ans:1, exp:'個人では小量で買い叩かれがちですが、グループでまとめることで仲買人への価格交渉力が生まれ、輸送・資材コストも分担できます。' },
+      { lv:3, q:'市場価格の情報を事前に把握しておくことで農家が得られる最も重要なメリットは？',
+        opts:['収量が増える','不当に低い価格での買い叩きを防ぎ、適正価格での販売交渉ができる','農薬代が節約できる','品質が自動的に向上する'],
+        ans:1, exp:'価格情報がなければバイヤーに一方的な低価格を提示されても断れません。ラジオ・スマートフォン・農業普及員から市場価格を事前収集する習慣が収入に直結します。' }
+    ]
+  },
+  learning: {
+    name: '技術学習', icon: '📚', color: '#6a4c9c',
+    qs: [
+      { lv:1, q:'新しい栽培技術や農業情報を得るために最も活用できる身近な資源はどれですか？',
+        opts:['何もせず自分の経験だけに頼る','農業普及員・農業訓練センター・農家グループの勉強会','テレビコマーシャル','農薬・肥料の販売店の宣伝のみ'],
+        ans:1, exp:'農業普及員は無料で圃場訪問・技術指導を行います。農家グループの勉強会では仲間の実践経験も学べる貴重な機会です。' },
+      { lv:2, q:'試験区（小さな区画でのテスト栽培）を設けて新技術を試すことの利点は？',
+        opts:['全体の収量が必ず増える','リスクを最小化しながら自分の畑での効果を実際に確かめられる','農薬が不要になる','政府から補助金がもらえる'],
+        ans:1, exp:'新技術を全面導入する前に小区画で試すことで、失敗リスクを抑えながら「自分の土地・気候での効果」を科学的に検証できます。' },
+      { lv:3, q:'栽培記録（日誌）をつけることが長期的な農業経営に役立つ最も重要な理由は？',
+        opts:['政府への報告義務があるから','気象・施肥・収量データの蓄積により、毎年の改善点が明確になり経営判断の精度が上がるから','記録するだけで収量が増えるから','補助金申請に必ず必要だから'],
+        ans:1, exp:'「何をしたときに収量が増えたか」を記録・比較することで、自分の畑に最適な栽培方法が科学的に導き出せます。記録は農家にとって最も安価な研究ツールです。' }
+    ]
+  }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let S = {
+  name: '', village: '', email: '',
+  selCats: [], allQs: [],
+  idx: 0, answers: [], lock: false
+};
+
+// ---- toggle category ----
+function toggleCat(el) { el.classList.toggle('on'); }
+
+// ---- start ----
+function startAssessment() {
+  S.name    = document.getElementById('inp-name').value.trim();
+  S.village = document.getElementById('inp-village').value.trim();
+  S.email   = document.getElementById('inp-email').value.trim();
+  S.selCats = [...document.querySelectorAll('#catGrid .cat-card.on')].map(e => e.dataset.cat);
+
+  if (S.selCats.length === 0) { toast('⚠️ カテゴリを1つ以上選択してください'); return; }
+
+  S.allQs = [];
+  S.selCats.forEach(cat => DB[cat].qs.forEach(q => S.allQs.push({...q, cat})));
+  S.allQs = S.allQs.sort(() => Math.random() - 0.5);
+  S.idx = 0; S.answers = [];
+
+  showScreen('s-question');
+  renderQ();
+}
+
+// ---- render question ----
+function renderQ() {
+  const total = S.allQs.length;
+  const q = S.allQs[S.idx];
+  const meta = DB[q.cat];
+  const pct = (S.idx / total) * 100;
+
+  document.getElementById('qBadge').textContent = meta.icon + ' ' + meta.name;
+  document.getElementById('qCounter').textContent = (S.idx+1) + ' / ' + total;
+  document.getElementById('qProg').style.width = pct + '%';
+  document.getElementById('qDiff').textContent = q.lv===1?'★☆☆ 基礎': q.lv===2?'★★☆ 応用':'★★★ 上級';
+  document.getElementById('qText').textContent = q.q;
+
+  const ow = document.getElementById('optWrap');
+  ow.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.innerHTML = `<span class="opt-lbl">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
+    b.onclick = () => selectAns(i, b);
+    ow.appendChild(b);
+  });
+
+  document.getElementById('feedbackWrap').style.display = 'none';
+  S.lock = false;
+}
+
+// ---- select answer ----
+function selectAns(idx, btn) {
+  if (S.lock) return;
+  S.lock = true;
+  const q = S.allQs[S.idx];
+  const ok = idx === q.ans;
+  S.answers.push({ cat: q.cat, ok, idx });
+
+  document.querySelectorAll('.opt-btn').forEach((b, i) => {
+    b.onclick = null;
+    if (i === q.ans) b.classList.add('correct-ans');
+    else if (i === idx && !ok) b.classList.add('wrong-ans');
+  });
+  btn.classList.add('chosen');
+
+  const fb = document.getElementById('fbBox');
+  fb.className = 'feedback-box ' + (ok ? 'ok' : 'ng');
+  fb.innerHTML = `<div class="feedback-title">${ok ? '✅ 正解！' : '❌ 不正解'}</div>${q.exp}`;
+
+  const nextBtn = document.getElementById('btnNext');
+  nextBtn.textContent = S.idx + 1 >= S.allQs.length ? '📊 結果を見る →' : '次の問題へ →';
+  document.getElementById('feedbackWrap').style.display = 'block';
+}
+
+// ---- next ----
+function nextQ() {
+  S.idx++;
+  if (S.idx >= S.allQs.length) showResults();
+  else renderQ();
+}
+
+// ============================================================
+// RESULTS — mirrors evaluation-system's 5-level, detailed report
+// ============================================================
+function showResults() {
+  // calc
+  const catSc = {};
+  S.selCats.forEach(c => { catSc[c] = {ok:0, total:0}; });
+  S.answers.forEach(a => { catSc[a.cat].total++; if(a.ok) catSc[a.cat].ok++; });
+  const totalOk  = S.answers.filter(a=>a.ok).length;
+  const totalAll = S.answers.length;
+  const score = Math.round(totalOk / totalAll * 100);
+
+  // score display
+  document.getElementById('rScoreBig').textContent = score;
+  document.getElementById('rName').textContent = S.name ? S.name + (S.village?' ('+S.village+')':'') : '';
+
+  // level (evaluation-system's 5 levels: Outstanding/Excellent/Good/Needs Improvement/Unsatisfactory)
+  let lv, lvClass, lvEmoji, lvDesc, comment, advice;
+  if      (score >= 90) { lv='Outstanding（卓越）'; lvClass='lv5'; lvEmoji='🌟'; lvDesc='90〜100点'; }
+  else if (score >= 80) { lv='Excellent（優秀）';   lvClass='lv4'; lvEmoji='🎖'; lvDesc='80〜89点'; }
+  else if (score >= 70) { lv='Good（良好）';         lvClass='lv3'; lvEmoji='🌿'; lvDesc='70〜79点'; }
+  else if (score >= 60) { lv='Needs Improvement（要向上）'; lvClass='lv2'; lvEmoji='🌱'; lvDesc='60〜69点'; }
+  else                  { lv='Unsatisfactory（入門段階）';   lvClass='lv1'; lvEmoji='🌰'; lvDesc='60点未満'; }
+
+  document.getElementById('levelPill').innerHTML = `<div class="level-pill ${lvClass}">${lvEmoji} ${lv}</div>`;
+  document.getElementById('levelSub').textContent = `総合スコア ${score}点 / ${lvDesc}`;
+
+  // comment + advice by level
+  if (score >= 90) {
+    comment = `<strong>卓越した技術力</strong>をお持ちです。${totalAll}問中${totalOk}問の正解は、ジャガイモ栽培の全工程を高いレベルで理解していることを証明しています。この知識を地域農業の発展に役立てましょう。農業研修のリーダー・ファシリテーターとして活躍できる段階です。`;
+    advice = [
+      {icon:'🎓', t:'知識を地域へ', b:'地域の勉強会や圃場研修でメンター役を担い、若い農家に技術を伝えましょう。教えることで自分の理解もさらに深まります。'},
+      {icon:'📊', t:'データ農業への挑戦', b:'各シーズンの収量・気象・施肥を記録し、最適条件を科学的に分析することで次のレベルへ進めます。'},
+      {icon:'🌐', t:'新品種・有機農業の試験導入', b:'疫病耐性・高収量の改良品種や有機栽培技術を試験区で導入し、地域に合う最適技術を開拓してください。'},
+    ];
+  } else if (score >= 80) {
+    comment = `<strong>優れた技術基盤</strong>を持っています。ほぼすべての分野で実践的な知識が備わっており、安定した栽培が期待できます。いくつかの専門的な知識をさらに深めることで、収量と品質を一段と引き上げられます。`;
+    advice = buildWeakAdvice(catSc, 2);
+  } else if (score >= 70) {
+    comment = `<strong>良好な基礎知識</strong>があります。多くの場面で適切な判断ができていますが、一部のカテゴリでの知識の深化が収量向上につながります。弱点を重点的に学ぶことで、上位レベルへのステップアップが可能です。`;
+    advice = buildWeakAdvice(catSc, 3);
+  } else if (score >= 60) {
+    comment = `基礎を固めている途中です。<strong>今知識を積み重ねることで、収量を大きく改善できる可能性があります。</strong>スコアが低かったカテゴリから優先的に学習を進めましょう。農業普及員や先輩農家への相談も非常に効果的です。`;
+    advice = buildWeakAdvice(catSc, 3);
+  } else {
+    comment = `学びの<strong>スタートラインに立っています</strong>。現時点での知識は発展途上ですが、正しい知識を身につければ収量・品質ともに大きく改善できます。まず土壌管理と種芋準備の基礎から一歩ずつ取り組みましょう。`;
+    advice = [
+      {icon:'📖', t:'基礎から始めよう', b:'「土壌pH管理」と「認定種芋の使い方」の2点を学ぶだけで収量が大きく変わります。農業普及所に相談してみましょう。'},
+      {icon:'👨‍🌾', t:'先輩農家の圃場を訪問', b:'経験豊富な農家の畑を見学させてもらい、実際の作業を目で見て学ぶことが最短ルートです。'},
+      {icon:'📱', t:'ゲームで楽しく復習', b:'「じゃがいもマスター」ゲームで繰り返し練習することで、知識が自然と身につきます。'},
+    ];
+  }
+
+  document.getElementById('overallComment').innerHTML = `<p>${comment}</p>`;
+
+  // Detail table (evaluation-system style)
+  const tbl = document.getElementById('reportTable');
+  tbl.innerHTML = '<tr><th>評価項目</th><th>正解数</th><th>スコア</th><th>進捗バー</th></tr>';
+  S.selCats.forEach(cat => {
+    const sc = catSc[cat];
+    const pct = sc.total > 0 ? Math.round(sc.ok/sc.total*100) : 0;
+    const meta = DB[cat];
+    const color = getColor(pct);
+    tbl.innerHTML += `<tr>
+      <td><span style="margin-right:5px">${meta.icon}</span>${meta.name}</td>
+      <td style="text-align:center">${sc.ok}/${sc.total}</td>
+      <td style="font-weight:700;color:${color}">${pct}点</td>
+      <td style="min-width:60px"><div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%;background:${color}"></div></div></td>
+    </tr>`;
+  });
+
+  // Bar chart
+  const bc = document.getElementById('barChart');
+  bc.innerHTML = '';
+  S.selCats.forEach(cat => {
+    const sc = catSc[cat];
+    const pct = sc.total > 0 ? Math.round(sc.ok/sc.total*100) : 0;
+    const meta = DB[cat];
+    bc.innerHTML += `
+      <div class="bar-row">
+        <div class="bar-row-head">
+          <span class="bar-label">${meta.icon} ${meta.name}</span>
+          <span class="bar-pct">${pct}点</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="background:${meta.color}" data-w="${pct}"></div>
+        </div>
+      </div>`;
+  });
+
+  // Advice
+  const aw = document.getElementById('adviceWrap');
+  aw.innerHTML = '';
+  advice.forEach(a => {
+    aw.innerHTML += `<div class="adv-item"><span class="adv-icon">${a.icon}</span><div class="adv-body"><span class="adv-title">${a.t}</span>${a.b}</div></div>`;
+  });
+
+  // Email setup
+  if (S.email) {
+    document.getElementById('emailCard').style.display = 'block';
+    document.getElementById('emailNote').textContent = `送信先: ${S.email}`;
+  } else {
+    document.getElementById('emailCard').style.display = 'none';
+  }
+
+  // Store for mail
+  window._R = { score, catSc, lv, lvEmoji };
+
+  showScreen('s-results');
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+  }, 400);
+}
+
+function getColor(pct) {
+  if (pct >= 80) return '#2e6b25';
+  if (pct >= 60) return '#c8843e';
+  return '#d95050';
+}
+
+function buildWeakAdvice(catSc, maxN) {
+  const TIPS = {
+    soil:       {icon:'🌱', t:'土壌管理を強化', b:'pH測定キットを入手し毎作前に確認しましょう。石灰・堆肥施用でpH改善と有機物補充が同時にできます。'},
+    seed:       {icon:'🌿', t:'種芋の準備を見直す', b:'認定種芋の購入と、植え付け2〜3週前からの催芽処理を習慣化しましょう。切断後の乾燥も腐敗防止に必須です。'},
+    planting:   {icon:'🪣', t:'植え付け技術の改善', b:'適切な深さ（8〜12cm）と株間（30cm×70cm）を守ることで、いもの数と大きさが安定します。'},
+    fertilizer: {icon:'💧', t:'施肥バランスの最適化', b:'カリウム施用量を見直しましょう。施肥記録をつけることで過不足が分かり、次作への改善につながります。'},
+    pest:       {icon:'🐛', t:'病害虫の早期発見と予防', b:'疫病には予防的殺菌剤散布を。週1回の圃場巡回でアブラムシ・疫病の初期兆候を早期発見しましょう。'},
+    hilling:    {icon:'⛏️', t:'培土・除草管理の徹底', b:'出芽後2〜3週に培土を実施し緑化防止といも数増加を達成しましょう。マルチングで除草労力も削減できます。'},
+    harvest:    {icon:'🥔', t:'収穫適期の見極め', b:'地上部の自然枯死を待ってから収穫しましょう。丁寧な取り扱いで打撲傷を最小化し、腐敗ロスを減らせます。'},
+    storage:    {icon:'🏚️', t:'貯蔵環境の改善', b:'収穫後のキュアリング（15〜20℃・1〜2週間）と、冷涼暗所での貯蔵を実践しましょう。出荷前の選別も価格向上につながります。'},
+    marketing:  {icon:'💰', t:'販売戦略を強化しよう', b:'収穫前にラジオや農業普及員で市場価格を確認する習慣をつけましょう。農家グループで共同出荷することで交渉力が大きく上がります。'},
+    learning:   {icon:'📚', t:'学習習慣を身につけよう', b:'農業普及員への相談・農家グループの勉強会への参加を定期的に行いましょう。小さな試験区で新技術を試し、栽培日誌に記録することが成長の近道です。'},
+  };
+  const weak = Object.entries(catSc)
+    .filter(([c, sc]) => sc.total > 0 && (sc.ok/sc.total) < 0.7)
+    .sort((a,b) => (a[1].ok/a[1].total) - (b[1].ok/b[1].total))
+    .slice(0, maxN);
+  if (weak.length === 0) return [{icon:'🎯', t:'バランスよく継続', b:'全カテゴリで良好な結果です。知識を実践に活かしながら、さらなる高得点を目指して復習を続けましょう。'}];
+  return weak.map(([cat]) => TIPS[cat]);
+}
+
+// ---- send mail ----
+function sendMail() {
+  const R = window._R;
+  let catLines = '';
+  S.selCats.forEach(c => {
+    const sc = R.catSc[c];
+    const pct = sc.total > 0 ? Math.round(sc.ok/sc.total*100) : 0;
+    catLines += DB[c].icon + ' ' + DB[c].name + ': ' + pct + '点 (' + sc.ok + '/' + sc.total + '問)\n';
+  });
+  const sub = encodeURIComponent('【じゃがいもマスター】農家技術評価レポート' + (S.name?' — '+S.name:''));
+  const body = encodeURIComponent(
+`━━━━━━━━━━━━━━━━━━━━
+ジャガいもマスター 技術評価レポート
+${S.name ? '農家名: '+S.name : ''}${S.village ? '　地区: '+S.village : ''}
+━━━━━━━━━━━━━━━━━━━━
+
+【総合スコア】 ${R.score}点 / 100点満点
+【評価レベル】 ${R.lvEmoji} ${R.lv}
+
+【カテゴリ別スコア】
+${catLines}
+━━━━━━━━━━━━━━━━━━━━
+このレポートは「じゃがいもマスター〜ネパール農家技術評価ツール」により生成されました。
+診断結果をもとに栽培技術の向上に取り組んでください。
+━━━━━━━━━━━━━━━━━━━━`);
+
+  document.getElementById('btnMail').disabled = true;
+  setTimeout(() => {
+    window.location.href = `mailto:${S.email}?subject=${sub}&body=${body}`;
+    document.getElementById('sentNotice').classList.add('show');
+    document.getElementById('btnMail').style.display = 'none';
+    toast('📬 メールアプリを開きました');
+  }, 500);
+}
+
+// ---- nav ----
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function confirmBack() {
+  if (confirm('評価を中断して最初に戻りますか？')) showScreen('s-start');
+}
+function restartAll() {
+  S = {name:'',village:'',email:'',selCats:[],allQs:[],idx:0,answers:[],lock:false};
+  ['inp-name','inp-village','inp-email'].forEach(id => document.getElementById(id).value='');
+  document.querySelectorAll('#catGrid .cat-card').forEach(e => e.classList.add('on'));
+  document.getElementById('sentNotice').classList.remove('show');
+  document.getElementById('btnMail').style.display='block';
+  document.getElementById('btnMail').disabled=false;
+  showScreen('s-start');
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
