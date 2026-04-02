@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Running the App
 
-No build process. Open `nepal-assessment-v2.html` directly in any modern browser. Zero dependencies.
+No build process. Open `nepal-assessment-v2.html` directly in any modern browser. No npm/bundler dependencies, but fonts load from Google Fonts CDN (Zen Antique Soft, Noto Sans JP) — internet access required for correct rendering.
 
 ## Architecture
 
@@ -34,7 +34,7 @@ All mutable state lives in a single global `S`:
 ```js
 { lv: 1|2|3, q: "text", opts: [4 strings], ans: 0-3, exp: "explanation" }
 ```
-All text is in Japanese; the app targets Nepalese potato farmers in mid-hill regions.
+`lv` values: 1 = 基礎 (basic), 2 = 応用 (applied), 3 = 上級 (advanced). All text is in Japanese; the app targets Nepalese potato farmers in mid-hill regions. The layout is mobile-first.
 
 ### Scoring
 
