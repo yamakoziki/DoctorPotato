@@ -34,7 +34,14 @@ All mutable state lives in a single global `S`:
 ```js
 { lv: 1|2|3, q: "text", opts: [4 strings], ans: 0-3, exp: "explanation" }
 ```
-All text is in Japanese; the app targets Nepalese potato farmers.
+All text is in Japanese; the app targets Nepalese potato farmers in mid-hill regions.
+
+### Scoring
+
+Total score is 0–100. Levels:
+- 90–100: Outstanding, 80–89: Excellent, 70–79: Good, 60–69: Needs Improvement, <60: Unsatisfactory
+
+The "← もどる" back button (visible during the quiz) resets state and returns to the start screen.
 
 ### Key Functions
 
@@ -46,4 +53,4 @@ All text is in Japanese; the app targets Nepalese potato farmers.
 | `nextQ()` | Advances index or calls `showResults()` |
 | `showResults()` | Calculates per-category scores, renders report |
 | `buildWeakAdvice()` | Generates personalized tips for weak categories |
-| `sendMail()` | Builds a `mailto:` link with score summary |
+| `sendMail()` | Builds a `mailto:` link with score summary (opens mail app; does not send automatically) |
