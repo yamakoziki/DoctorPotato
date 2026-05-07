@@ -434,6 +434,21 @@ body {
 .toast.show { transform: translateX(-50%) translateY(0); }
 .mt14 { margin-top: 14px; }
 .pb30 { padding-bottom: 30px; }
+.lang-sw {
+  position: fixed; top: 12px; right: 12px; z-index: 300;
+  display: flex; gap: 5px;
+}
+.lang-btn {
+  padding: 5px 11px;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  border-radius: 20px;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+  color: white; font-size: 11px;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.2s;
+}
+.lang-btn.active { background: rgba(255,255,255,0.3); border-color: white; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -455,92 +470,31 @@ body {
 
   <!-- Evaluator Info -->
   <div class="card">
-    <div class="card-head">📝 評価情報の入力</div>
+    <div class="card-head" id="card-eval-head">📝 評価情報の入力</div>
     <div class="evaluator-row">
       <div>
-        <label class="field-label">農家名・氏名</label>
+        <label class="field-label" id="lbl-name">農家名・氏名</label>
         <input class="text-input" id="inp-name" type="text" placeholder="例：Ramesh Thapa">
       </div>
       <div>
-        <label class="field-label">地区・村名</label>
+        <label class="field-label" id="lbl-village">地区・村名</label>
         <input class="text-input" id="inp-village" type="text" placeholder="例：Jumla">
       </div>
     </div>
     <div class="evaluator-row full">
-      <label class="field-label">📧 メールアドレス（任意）</label>
+      <label class="field-label" id="lbl-email">📧 メールアドレス（任意）</label>
       <input class="text-input" id="inp-email" type="email" placeholder="結果レポートをメールで受け取る場合のみ">
     </div>
-    <p style="font-size:11px;color:var(--soil-mid);margin-top:6px;opacity:0.8;">※ メールはお使いのメールアプリから送信されます</p>
+    <p id="email-note" style="font-size:11px;color:var(--soil-mid);margin-top:6px;opacity:0.8;">※ メールはお使いのメールアプリから送信されます</p>
   </div>
 
   <!-- Category selector -->
   <div class="card mt14">
-    <div class="card-head">🌾 評価カテゴリ（10項目）</div>
-    <div class="cat-grid" id="catGrid">
-      <div class="cat-card on" data-cat="soil" onclick="toggleCat(this)">
-        <span class="c-icon">🌱</span>
-        <div class="c-name">土壌管理</div>
-        <div class="c-sub">pH・耕起・堆肥</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="seed" onclick="toggleCat(this)">
-        <span class="c-icon">🌿</span>
-        <div class="c-name">種芋準備</div>
-        <div class="c-sub">品種・催芽・消毒</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="planting" onclick="toggleCat(this)">
-        <span class="c-icon">🪣</span>
-        <div class="c-name">植え付け</div>
-        <div class="c-sub">深さ・株間・時期</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="fertilizer" onclick="toggleCat(this)">
-        <span class="c-icon">💧</span>
-        <div class="c-name">施肥・灌水</div>
-        <div class="c-sub">NPK・水管理</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="pest" onclick="toggleCat(this)">
-        <span class="c-icon">🐛</span>
-        <div class="c-name">病害虫対策</div>
-        <div class="c-sub">疫病・アブラムシ</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="hilling" onclick="toggleCat(this)">
-        <span class="c-icon">⛏️</span>
-        <div class="c-name">培土・除草</div>
-        <div class="c-sub">土寄せ・雑草管理</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="harvest" onclick="toggleCat(this)">
-        <span class="c-icon">🥔</span>
-        <div class="c-name">収穫・判断</div>
-        <div class="c-sub">適期・損傷防止</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="storage" onclick="toggleCat(this)">
-        <span class="c-icon">🏚️</span>
-        <div class="c-name">貯蔵・出荷</div>
-        <div class="c-sub">キュアリング・保存</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="marketing" onclick="toggleCat(this)">
-        <span class="c-icon">💰</span>
-        <div class="c-name">販売・市場</div>
-        <div class="c-sub">価格・流通・交渉</div>
-        <div class="c-chk"></div>
-      </div>
-      <div class="cat-card on" data-cat="learning" onclick="toggleCat(this)">
-        <span class="c-icon">📚</span>
-        <div class="c-name">技術学習</div>
-        <div class="c-sub">情報収集・研修</div>
-        <div class="c-chk"></div>
-      </div>
-    </div>
+    <div class="card-head" id="cat-head">🌾 評価カテゴリ（10項目）</div>
+    <div class="cat-grid" id="catGrid"></div>
   </div>
 
-  <button class="btn-start" onclick="startAssessment()">🚜 評価を開始する</button>
+  <button class="btn-start" id="btn-start" onclick="startAssessment()">🚜 評価を開始する</button>
 </div>
 
 <!-- ===== SCREEN: QUESTION ===== -->
@@ -565,18 +519,18 @@ body {
 <!-- ===== SCREEN: RESULTS ===== -->
 <div class="screen pb30" id="s-results">
   <div class="result-hero">
-    <div class="result-hero-label">SKILL ASSESSMENT REPORT</div>
-    <div class="result-hero-title">ジャガイモ栽培<br>技術診断レポート</div>
+    <div class="result-hero-label" id="rLabel">SKILL ASSESSMENT REPORT</div>
+    <div class="result-hero-title" id="rTitle">ジャガイモ栽培<br>技術診断レポート</div>
     <div class="score-ring">
       <div class="score-big" id="rScoreBig">--</div>
-      <div class="score-denom">/ 100点</div>
+      <div class="score-denom" id="rDenom">/ 100点</div>
     </div>
     <div class="evaluatee-name" id="rName"></div>
   </div>
 
   <!-- Level -->
   <div class="card mt14" style="text-align:center;">
-    <div class="card-head" style="justify-content:center;">🏆 総合評価レベル</div>
+    <div class="card-head" id="rOverallHead" style="justify-content:center;">🏆 総合評価レベル</div>
     <div class="level-wrap">
       <div id="levelPill"></div>
       <div id="levelSub" style="font-size:12px;color:var(--soil-mid);margin-top:4px;"></div>
@@ -586,7 +540,7 @@ body {
 
   <!-- Detail table (evaluation-system style) -->
   <div class="card mt14">
-    <div class="card-head">📊 カテゴリ別スコア詳細</div>
+    <div class="card-head" id="rCatHead">📊 カテゴリ別スコア詳細</div>
     <table class="report-table" id="reportTable">
       <tr><th>評価項目</th><th>正解</th><th>スコア</th><th>進捗</th></tr>
     </table>
@@ -594,19 +548,19 @@ body {
 
   <!-- Bar chart visual -->
   <div class="card mt14">
-    <div class="card-head">📈 技術レベル分布</div>
+    <div class="card-head" id="rLevelHead">📈 技術レベル分布</div>
     <div id="barChart"></div>
   </div>
 
   <!-- Advice -->
   <div class="card mt14">
-    <div class="card-head">🌾 次のステップ・アドバイス</div>
+    <div class="card-head" id="rAdviceHead">🌾 次のステップ・アドバイス</div>
     <div id="adviceWrap"></div>
   </div>
 
   <!-- Email -->
   <div class="card mt14" id="emailCard">
-    <div class="card-head">📬 結果レポートをメールで受け取る</div>
+    <div class="card-head" id="rEmailHead">📬 結果レポートをメールで受け取る</div>
     <div class="email-card-inner">
       <p class="email-note" id="emailNote"></p>
       <button class="btn-mail" id="btnMail" onclick="sendMail()">📧 メールアプリで送信する</button>
@@ -614,156 +568,529 @@ body {
     </div>
   </div>
 
-  <button class="btn-restart" onclick="restartAll()">🔄 もう一度評価する</button>
+  <button class="btn-restart" id="btn-restart" onclick="restartAll()">🔄 もう一度評価する</button>
+</div>
+
+<div class="lang-sw" id="langSw">
+  <button class="lang-btn active" data-l="ja" onclick="setLang('ja')">日本語</button>
+  <button class="lang-btn" data-l="ne" onclick="setLang('ne')">नेपाली</button>
+  <button class="lang-btn" data-l="en" onclick="setLang('en')">EN</button>
 </div>
 
 <script>
 // ============================================================
-// QUESTION DATABASE — 8 categories × 3 questions
-// (mirrors evaluation-system's 8-criteria structure)
+// QUESTION DATABASE — 10 categories × 3 questions (trilingual)
 // ============================================================
 const DB = {
   soil: {
-    name: '土壌管理', icon: '🌱', color: '#5a9e48',
+    name: {ja:'土壌管理', ne:'माटो व्यवस्थापन', en:'Soil Management'},
+    sub:  {ja:'pH・耕起・堆肥', ne:'pH, जोत, कम्पोस्ट', en:'pH, Tillage, Compost'},
+    icon: '🌱', color: '#5a9e48',
     qs: [
-      { lv:1, q:'ジャガイモに最適な土壌pHはどれですか？',
-        opts:['pH 4.0未満（強酸性）','pH 5.0〜6.5（弱酸性）','pH 7.5〜8.5（アルカリ性）','pHは関係ない'],
-        ans:1, exp:'pH 5.0〜6.5が最適です。pH7以上ではそうか病が多発し、pH4未満だと肥料の吸収が阻害されます。' },
-      { lv:2, q:'深耕（25〜30cm）を行う最も重要な目的は？',
-        opts:['見た目を整えるため','水の蒸発を促すため','塊茎が十分に肥大するスペースを確保するため','雑草の種を地中に埋めるため'],
-        ans:2, exp:'塊茎は土中で膨らみます。浅い土壌では変形・小いもになります。深耕で通気性・排水性も向上します。' },
-      { lv:3, q:'作付け前の堆肥施用が土壌に与える最大の効果は？',
-        opts:['土の色を黒くするため','有機物を増やし保水性・通気性・微生物活性を高めるため','土を硬く締めるため','土のpHを下げるため'],
-        ans:1, exp:'堆肥の有機物は土壌微生物の活性化、保水・排水バランス改善、徐放性養分供給を同時に実現します。' }
+      { lv:1,
+        q:   {ja:'ジャガイモに最適な土壌pHはどれですか？', ne:'आलुको लागि उत्तम माटोको pH कुन हो?', en:'What is the optimal soil pH for potatoes?'},
+        opts:{ja:['pH 4.0未満（強酸性）','pH 5.0〜6.5（弱酸性）','pH 7.5〜8.5（アルカリ性）','pHは関係ない'],
+              ne:['pH 4.0 भन्दा कम (अत्यधिक अम्लीय)','pH 5.0–6.5 (हल्का अम्लीय)','pH 7.5–8.5 (क्षारीय)','pH को सम्बन्ध छैन'],
+              en:['Below pH 4.0 (strongly acidic)','pH 5.0–6.5 (slightly acidic)','pH 7.5–8.5 (alkaline)',"pH doesn't matter"]},
+        ans:1,
+        exp: {ja:'pH 5.0〜6.5が最適です。pH7以上ではそうか病が多発し、pH4未満だと肥料の吸収が阻害されます。',
+              ne:'pH 5.0–6.5 उत्तम हो। pH 7 भन्दा माथि खुर्पेटे रोग बढ्छ, pH 4 भन्दा कम मलको अवशोषण बाधित हुन्छ।',
+              en:'pH 5.0–6.5 is optimal. Above pH 7, scab disease increases; below pH 4, nutrient absorption is impaired.'} },
+      { lv:2,
+        q:   {ja:'深耕（25〜30cm）を行う最も重要な目的は？', ne:'गहिरो जोत (२५–३० से.मि.) गर्नुको सबैभन्दा महत्त्वपूर्ण उद्देश्य के हो?', en:'What is the main purpose of deep ploughing (25–30 cm)?'},
+        opts:{ja:['見た目を整えるため','水の蒸発を促すため','塊茎が十分に肥大するスペースを確保するため','雑草の種を地中に埋めるため'],
+              ne:['देखावट राम्रो बनाउन','पानीको वाष्पीकरण बढाउन','कन्दलाई राम्ररी फैलिने ठाउँ दिन','झारका बिउ माटोमा पुर्न'],
+              en:['To improve appearance','To increase evaporation','To give tubers enough space to expand','To bury weed seeds']},
+        ans:2,
+        exp: {ja:'塊茎は土中で膨らみます。浅い土壌では変形・小いもになります。深耕で通気性・排水性も向上します。',
+              ne:'कन्द माटोभित्र ठूलो हुन्छ। उथलो माटोमा बाङ्गो र सानो हुन्छ। गहिरो जोतले हावा र पानी निकास पनि सुधार्छ।',
+              en:'Tubers expand underground. Shallow soil causes deformation and small tubers. Deep ploughing also improves aeration and drainage.'} },
+      { lv:3,
+        q:   {ja:'作付け前の堆肥施用が土壌に与える最大の効果は？', ne:'रोपाई अघि कम्पोस्ट हाल्दा माटोमा सबैभन्दा ठूलो फाइदा के हुन्छ?', en:'What is the greatest benefit of applying compost before planting?'},
+        opts:{ja:['土の色を黒くするため','有機物を増やし保水性・通気性・微生物活性を高めるため','土を硬く締めるため','土のpHを下げるため'],
+              ne:['माटोको रङ कालो बनाउन','जैविक पदार्थ बढाई पानी धारण, हावा र सूक्ष्मजीव सक्रियता सुधार्न','माटो कडा बनाउन','माटोको pH घटाउन'],
+              en:['To darken soil colour','To increase organic matter, improving water retention, aeration and microbial activity','To compact the soil','To lower soil pH']},
+        ans:1,
+        exp: {ja:'堆肥の有機物は土壌微生物の活性化、保水・排水バランス改善、徐放性養分供給を同時に実現します。',
+              ne:'कम्पोस्टका जैविक पदार्थले माटोका सूक्ष्मजीव सक्रिय गर्छन्, पानी तथा हावा सन्तुलन सुधार्छन् र बिस्तारै पोषण दिन्छन्।',
+              en:'Compost organic matter activates soil microbes, improves water and air balance, and provides slow-release nutrients simultaneously.'} }
     ]
   },
   seed: {
-    name: '種芋準備', icon: '🌿', color: '#4a8c3f',
+    name: {ja:'種芋準備', ne:'बीउ आलु तयारी', en:'Seed Preparation'},
+    sub:  {ja:'品種・催芽・消毒', ne:'जात, अङ्कुरण, विसंक्रमण', en:'Variety, Sprouting, Disinfection'},
+    icon: '🌿', color: '#4a8c3f',
     qs: [
-      { lv:1, q:'種芋の催芽に適した温度・場所の組み合わせはどれですか？',
-        opts:['5℃以下の暗所','15〜20℃の明るい散光下','35℃以上の高温直射日光','温度に関係なく暗所'],
-        ans:1, exp:'15〜20℃・散光のある明るい場所で催芽することで、緑化した短く強健な芽が育ちます。' },
-      { lv:2, q:'種芋切断面のコルク化（乾燥処理）の主な目的は？',
-        opts:['種芋の重さを軽くするため','切り口への病原菌侵入を防ぐため','水分を多く吸収するため','芽の出る方向を決めるため'],
-        ans:1, exp:'切断面を2〜3日乾燥させるか木灰・殺菌剤を塗ることで、腐敗の主因となる菌の侵入を大幅に防げます。' },
-      { lv:3, q:'認定種芋（Certified Seed）を自家採種種芋より推奨する主な理由は？',
-        opts:['値段が安いから','ウイルス病検査済みで病気が少なく、収量が安定するから','必ず2倍の収量が得られるから','農薬が不要になるから'],
-        ans:1, exp:'認定種芋はウイルス等の病気が除去されています。ウイルスによる収量損失は最大50%以上になることもあります。' }
+      { lv:1,
+        q:   {ja:'種芋の催芽に適した温度・場所の組み合わせはどれですか？', ne:'बीउ आलु अङ्कुरण गर्न उपयुक्त तापक्रम र ठाउँको संयोजन कुन हो?', en:'What temperature and location combination is best for sprouting seed potatoes?'},
+        opts:{ja:['5℃以下の暗所','15〜20℃の明るい散光下','35℃以上の高温直射日光','温度に関係なく暗所'],
+              ne:['5°C भन्दा कम अँध्यारो ठाउँ','15–20°C उज्यालो छरिएको प्रकाशमा','35°C भन्दा बढी सिधा घाम','जुनसुकै तापक्रममा अँध्यारोमा'],
+              en:['Dark place below 5°C','15–20°C in diffused light','Above 35°C in direct sunlight','Dark place at any temperature']},
+        ans:1,
+        exp: {ja:'15〜20℃・散光のある明るい場所で催芽することで、緑化した短く強健な芽が育ちます。',
+              ne:'15–20°C र छरिएको प्रकाशमा अङ्कुरण गर्दा हरियो, छोटो र बलियो अङ्कुर उम्रन्छ।',
+              en:'Sprouting at 15–20°C in diffused light produces green, short and sturdy sprouts.'} },
+      { lv:2,
+        q:   {ja:'種芋切断面のコルク化（乾燥処理）の主な目的は？', ne:'बीउ आलु काटेको भागलाई सुकाउने (कर्किङ) को मुख्य उद्देश्य के हो?', en:'What is the main purpose of curing the cut surface of seed potatoes?'},
+        opts:{ja:['種芋の重さを軽くするため','切り口への病原菌侵入を防ぐため','水分を多く吸収するため','芽の出る方向を決めるため'],
+              ne:['बीउको तौल घटाउन','काटेको भागमा रोगका जीवाणु छिर्न रोक्न','बढी पानी सोस्न','अङ्कुर निस्कने दिशा निर्धारण गर्न'],
+              en:['To reduce seed weight','To prevent pathogens entering the cut surface','To absorb more moisture','To direct which way sprouts emerge']},
+        ans:1,
+        exp: {ja:'切断面を2〜3日乾燥させるか木灰・殺菌剤を塗ることで、腐敗の主因となる菌の侵入を大幅に防げます。',
+              ne:'काटेको भाग 2–3 दिन सुकाउँदा वा खरानी/विसंक्रामक लगाउँदा सड्ने कारण बन्ने ब्याक्टेरिया छिर्न धेरै कम हुन्छ।',
+              en:'Drying the cut surface for 2–3 days or applying wood ash/disinfectant greatly reduces entry of rot-causing bacteria.'} },
+      { lv:3,
+        q:   {ja:'認定種芋（Certified Seed）を自家採種種芋より推奨する主な理由は？', ne:'प्रमाणित बीउ आलु (Certified Seed) घरको बीउभन्दा किन राम्रो मानिन्छ?', en:'Why is certified seed potato recommended over farm-saved seed?'},
+        opts:{ja:['値段が安いから','ウイルス病検査済みで病気が少なく、収量が安定するから','必ず2倍の収量が得られるから','農薬が不要になるから'],
+              ne:['सस्तो हुन्छ','भाइरस परीक्षण भएको, रोग कम हुन्छ र उत्पादन स्थिर हुन्छ','उत्पादन दोब्बर हुन्छ','विषादी चाहिँदैन'],
+              en:['It is cheaper','Virus-tested, less disease, stable yield','Always doubles the yield','No pesticides needed']},
+        ans:1,
+        exp: {ja:'認定種芋はウイルス等の病気が除去されています。ウイルスによる収量損失は最大50%以上になることもあります。',
+              ne:'प्रमाणित बीउमा भाइरस जस्ता रोग हटाइएका हुन्छन्। भाइरसले उत्पादन ५०% भन्दा बढी घटाउन सक्छ।',
+              en:'Certified seed is free of viruses and other diseases. Virus infection can reduce yield by more than 50%.'} }
     ]
   },
   planting: {
-    name: '植え付け', icon: '🪣', color: '#7ab648',
+    name: {ja:'植え付け', ne:'रोपाई', en:'Planting'},
+    sub:  {ja:'深さ・株間・時期', ne:'गहिराइ, दूरी, समय', en:'Depth, Spacing, Timing'},
+    icon: '🪣', color: '#7ab648',
     qs: [
-      { lv:1, q:'ネパール中山地でジャガイモを春作する一般的な植え付け時期はいつですか？',
-        opts:['12月〜1月（冬の寒い時期）','2月〜4月（春・気温上昇期）','7月〜8月（雨季の盛り）','10月〜11月（秋）'],
-        ans:1, exp:'春作は2〜4月が一般的です。晩霜後に植え付け、いも肥大期に低温・雨が当たるよう時期を調整します。' },
-      { lv:2, q:'種芋の植え付け深さとして一般的に推奨されるのは？',
-        opts:['2〜3cm（ほぼ地表）','8〜12cm（適切な深さ）','20cm以上（非常に深い）','地面に置くだけ'],
-        ans:1, exp:'8〜12cmが標準です。浅すぎると緑化・凍害リスク、深すぎると出芽遅延・腐敗リスクが高まります。' },
-      { lv:3, q:'株間30cm・畝間70cmを守る最も重要な理由は？',
-        opts:['農薬を節約するため','適切な光・通風・根の張りを確保し収量を最大化するため','機械作業を楽にするため','水が溜まりやすくするため'],
-        ans:1, exp:'適切な株間で葉のオーバーラップを防ぎ、光合成効率を最大化。密植は収量低下・病害多発につながります。' }
+      { lv:1,
+        q:   {ja:'ネパール中山地でジャガイモを春作する一般的な植え付け時期はいつですか？', ne:'नेपालको मध्यपहाडमा बसन्तकालीन आलु रोप्ने सामान्य समय कुन हो?', en:'When is the general spring planting period for potatoes in Nepal\'s mid-hills?'},
+        opts:{ja:['12月〜1月（冬の寒い時期）','2月〜4月（春・気温上昇期）','7月〜8月（雨季の盛り）','10月〜11月（秋）'],
+              ne:['डिसेम्बर–जनवरी (जाडो)','फेब्रुअरी–अप्रिल (बसन्त)','जुलाई–अगस्ट (मनसुन)','अक्टोबर–नोभेम्बर (शरद)'],
+              en:['December–January (cold winter)','February–April (spring, rising temp)','July–August (peak monsoon)','October–November (autumn)']},
+        ans:1,
+        exp: {ja:'春作は2〜4月が一般的です。晩霜後に植え付け、いも肥大期に低温・雨が当たるよう時期を調整します。',
+              ne:'बसन्त खेतीमा फेब्रुअरी–अप्रिल सामान्य हो। पाला सकिएपछि रोप्ने र कन्द फैलिने बेलामा चिसो र वर्षा पर्ने गरी समय मिलाउनुपर्छ।',
+              en:'February–April is typical for spring. Plant after the last frost and time it so cool weather and rain coincide with tuber bulking.'} },
+      { lv:2,
+        q:   {ja:'種芋の植え付け深さとして一般的に推奨されるのは？', ne:'बीउ आलु रोप्दा सिफारिस गरिएको गहिराइ कति हो?', en:'What planting depth is generally recommended for seed potatoes?'},
+        opts:{ja:['2〜3cm（ほぼ地表）','8〜12cm（適切な深さ）','20cm以上（非常に深い）','地面に置くだけ'],
+              ne:['2–3 से.मि. (लगभग सतहमा)','8–12 से.मि. (उचित गहिराइ)','20 से.मि. भन्दा बढी (धेरै गहिरो)','जमिनमाथि राख्ने मात्र'],
+              en:['2–3 cm (almost on surface)','8–12 cm (appropriate depth)','More than 20 cm (very deep)','Just placed on the ground']},
+        ans:1,
+        exp: {ja:'8〜12cmが標準です。浅すぎると緑化・凍害リスク、深すぎると出芽遅延・腐敗リスクが高まります。',
+              ne:'8–12 से.मि. मानक हो। उथलो भयो भने हरियो हुने र जम्ने जोखिम, गहिरो भयो भने उम्रन ढिलो र सड्ने जोखिम बढ्छ।',
+              en:'8–12 cm is standard. Too shallow risks greening and frost; too deep risks delayed emergence and rot.'} },
+      { lv:3,
+        q:   {ja:'株間30cm・畝間70cmを守る最も重要な理由は？', ne:'बिरुवा बिचको दूरी ३० से.मि. र कतार बिचको दूरी ७० से.मि. राख्नुको मुख्य कारण के हो?', en:'Why is it important to maintain 30 cm plant spacing and 70 cm row spacing?'},
+        opts:{ja:['農薬を節約するため','適切な光・通風・根の張りを確保し収量を最大化するため','機械作業を楽にするため','水が溜まりやすくするため'],
+              ne:['विषादी बचाउन','उचित प्रकाश, हावा र जरा फैलाउन तथा उत्पादन अधिकतम बनाउन','मेसिन काम गर्न सजिलो पार्न','पानी जम्न दिन'],
+              en:['To save pesticides','To ensure adequate light, ventilation and root spread, maximising yield','To make machinery easier','To let water accumulate']},
+        ans:1,
+        exp: {ja:'適切な株間で葉のオーバーラップを防ぎ、光合成効率を最大化。密植は収量低下・病害多発につながります。',
+              ne:'उचित दूरीले पातको ओभरल्याप रोक्छ र प्रकाशसंश्लेषण अधिकतम गर्छ। घना रोपाईले उत्पादन घट्छ र रोग बढ्छ।',
+              en:'Proper spacing prevents leaf overlap and maximises photosynthesis. Dense planting reduces yield and increases disease.'} }
     ]
   },
   fertilizer: {
-    name: '施肥・灌水', icon: '💧', color: '#3a8fd4',
+    name: {ja:'施肥・灌水', ne:'मलखाद र सिँचाइ', en:'Fertilization & Irrigation'},
+    sub:  {ja:'NPK・水管理', ne:'NPK, पानी व्यवस्थापन', en:'NPK, Water Management'},
+    icon: '💧', color: '#3a8fd4',
     qs: [
-      { lv:1, q:'ジャガイモの塊茎肥大に最も重要な多量栄養素はどれですか？',
-        opts:['窒素（N）—茎葉を増やす','リン酸（P）—根の発達に必須','カリウム（K）—糖の転流・いも肥大','カルシウム（Ca）—細胞壁強化'],
-        ans:2, exp:'カリウムは糖・デンプンの転流（葉からいもへの移動）に直結します。施用不足はいもが小さく品質が下がります。' },
-      { lv:2, q:'窒素過多施用がジャガイモに引き起こす最も典型的な問題は？',
-        opts:['葉が黄化して枯れる','茎葉が過剰繁茂し、いもが形成されにくくなる','塊茎の数が倍増する','病気がなくなる'],
-        ans:1, exp:'窒素過多は栄養生長（茎葉伸長）を優先させ、いもへの光合成産物の蓄積が妨げられます（奢長）。' },
-      { lv:3, q:'乾期の灌水として最も効率的なタイミングと方法は？',
-        opts:['真昼の直射日光下で葉面散水','早朝または夕方に根元への点滴・溝灌水','深夜のみに空中散布','降雨直前に大量灌水'],
-        ans:1, exp:'早朝・夕方は蒸散ロスが最小。根元灌水で根に直接水を届け、葉濡れによる病害も防げます。' }
+      { lv:1,
+        q:   {ja:'ジャガイモの塊茎肥大に最も重要な多量栄養素はどれですか？', ne:'आलुको कन्द विकासका लागि सबैभन्दा महत्त्वपूर्ण पोषक तत्त्व कुन हो?', en:'Which macronutrient is most important for potato tuber development?'},
+        opts:{ja:['窒素（N）—茎葉を増やす','リン酸（P）—根の発達に必須','カリウム（K）—糖の転流・いも肥大','カルシウム（Ca）—細胞壁強化'],
+              ne:['नाइट्रोजन (N) — हाँगापात बढाउँछ','फस्फोरस (P) — जरा विकासमा आवश्यक','पोटासियम (K) — चिनी स्थानान्तरण र कन्द विकास','क्याल्सियम (Ca) — कोशिका भित्ता बलियो बनाउँछ'],
+              en:['Nitrogen (N) — promotes leafy growth','Phosphorus (P) — essential for root development','Potassium (K) — sugar translocation and tuber bulking','Calcium (Ca) — strengthens cell walls']},
+        ans:2,
+        exp: {ja:'カリウムは糖・デンプンの転流（葉からいもへの移動）に直結します。施用不足はいもが小さく品質が下がります。',
+              ne:'पोटासियम चिनी र स्टार्चको स्थानान्तरण (पातबाट कन्दतर्फ) मा प्रत्यक्ष सम्बन्धित छ। कम प्रयोग गर्दा कन्द सानो र गुणस्तर खराब हुन्छ।',
+              en:'Potassium directly controls translocation of sugars and starch from leaves to tubers. Deficiency causes small, poor-quality tubers.'} },
+      { lv:2,
+        q:   {ja:'窒素過多施用がジャガイモに引き起こす最も典型的な問題は？', ne:'नाइट्रोजन बढी हाल्दा आलुमा सबैभन्दा सामान्य समस्या के हुन्छ?', en:'What is the most typical problem caused by excess nitrogen application in potatoes?'},
+        opts:{ja:['葉が黄化して枯れる','茎葉が過剰繁茂し、いもが形成されにくくなる','塊茎の数が倍増する','病気がなくなる'],
+              ne:['पात पहेँलो भएर मर्छ','हाँगापात अत्यधिक बढ्छ र कन्द कम बन्छ','कन्दको संख्या दोब्बर हुन्छ','रोग हराउँछ'],
+              en:['Leaves turn yellow and die','Excessive foliage growth, fewer tubers formed','Tuber number doubles','Diseases disappear']},
+        ans:1,
+        exp: {ja:'窒素過多は栄養生長（茎葉伸長）を優先させ、いもへの光合成産物の蓄積が妨げられます（奢長）。',
+              ne:'नाइट्रोजन बढी हुँदा वनस्पति वृद्धि (हाँगापात) लाई प्राथमिकता दिन्छ र कन्दमा प्रकाशसंश्लेषण उत्पादन जम्मा हुन रोकिन्छ।',
+              en:'Excess nitrogen prioritises vegetative growth (stems and leaves), preventing photosynthate accumulation in tubers.'} },
+      { lv:3,
+        q:   {ja:'乾期の灌水として最も効率的なタイミングと方法は？', ne:'सुख्खा मौसममा सिँचाइ गर्ने सबैभन्दा प्रभावकारी समय र तरिका कुन हो?', en:'What is the most efficient timing and method for irrigation in the dry season?'},
+        opts:{ja:['真昼の直射日光下で葉面散水','早朝または夕方に根元への点滴・溝灌水','深夜のみに空中散布','降雨直前に大量灌水'],
+              ne:['दिउँसो सिधा घाममा पात सिँचाइ','बिहान वा बेलुका जरामा थोपा/नाली सिँचाइ','मध्यरातमा मात्र हवाई छर्काव','वर्षाअघि नै धेरै पानी दिने'],
+              en:['Foliar spray under midday sun','Drip or furrow irrigation at the base in early morning or evening','Overhead spray at midnight only','Heavy irrigation just before rain']},
+        ans:1,
+        exp: {ja:'早朝・夕方は蒸散ロスが最小。根元灌水で根に直接水を届け、葉濡れによる病害も防げます。',
+              ne:'बिहान/बेलुका वाष्पीकरण न्यूनतम हुन्छ। जरा सिँचाइले सिधै जरामा पानी पुग्छ र पात भिजेर रोग हुने खतरा पनि कम हुन्छ।',
+              en:'Morning/evening minimises evaporation loss. Root-zone irrigation delivers water directly to roots and prevents disease from wet leaves.'} }
     ]
   },
   pest: {
-    name: '病害虫対策', icon: '🐛', color: '#e07b2a',
+    name: {ja:'病害虫対策', ne:'रोग किरा नियन्त्रण', en:'Pest & Disease Control'},
+    sub:  {ja:'疫病・アブラムシ', ne:'ढुसी रोग, एफिड', en:'Late Blight, Aphids'},
+    icon: '🐛', color: '#e07b2a',
     qs: [
-      { lv:1, q:'ジャガイモ疫病（Late Blight）が最も多発する気象条件は？',
-        opts:['高温乾燥（35℃以上、湿度30%以下）','冷涼多湿（15〜20℃、霧や雨が続く）','強風の晴天','真冬の凍結期'],
-        ans:1, exp:'疫病菌Phytophthora infestansは15〜20℃・高湿度で爆発的に増殖します。霧・雨の多い時期の予防散布が必須です。' },
-      { lv:2, q:'アブラムシがジャガイモ種芋生産で特に深刻な理由は？',
-        opts:['葉を食べて光合成を妨げるから','PVY等のウイルス病を株から株へ伝播するから','土の中でいもを直接食べるから','塊茎の色を変えるから'],
-        ans:1, exp:'アブラムシはウイルスのベクター（媒介者）です。わずか数匹でも圃場全体にウイルスが広がるため、徹底防除が必要です。' },
-      { lv:3, q:'連作（同じ畑で毎年ジャガイモを作ること）を避ける主な理由は？',
-        opts:['土壌が肥えすぎるから','土壌病害虫（そうか病菌・シストセンチュウ等）が蓄積し収量が低下するから','水の使用量が増えるから','特に問題はない'],
-        ans:1, exp:'3〜4年輪作することで土壌病原菌密度が自然低下します。アブラナ科・マメ科との輪作が特に効果的です。' }
+      { lv:1,
+        q:   {ja:'ジャガイモ疫病（Late Blight）が最も多発する気象条件は？', ne:'आलुको पछिल्लो झुलसा रोग (Late Blight) सबैभन्दा धेरै फैलिने मौसम कुन हो?', en:'What weather conditions favour Late Blight most?'},
+        opts:{ja:['高温乾燥（35℃以上、湿度30%以下）','冷涼多湿（15〜20℃、霧や雨が続く）','強風の晴天','真冬の凍結期'],
+              ne:['उच्च तापक्रम र सुक्खा (35°C+, आर्द्रता 30% भन्दा कम)','चिसो र आर्द्र (15–20°C, कुहिरो/वर्षा)','तीव्र हावाका साथ घाम','कडा जाडोमा जम्ने समय'],
+              en:['Hot and dry (35°C+, humidity below 30%)','Cool and humid (15–20°C, fog or continuous rain)','Windy clear weather','Hard frost in midwinter']},
+        ans:1,
+        exp: {ja:'疫病菌Phytophthora infestansは15〜20℃・高湿度で爆発的に増殖します。霧・雨の多い時期の予防散布が必須です。',
+              ne:'झुलसा रोगका जीवाणु Phytophthora infestans 15–20°C र उच्च आर्द्रतामा तीव्र रूपमा फैलन्छन्। कुहिरो र वर्षायाममा रोकथाम छर्काव अनिवार्य छ।',
+              en:'Phytophthora infestans spreads explosively at 15–20°C with high humidity. Preventive spraying is essential during foggy and rainy periods.'} },
+      { lv:2,
+        q:   {ja:'アブラムシがジャガイモ種芋生産で特に深刻な理由は？', ne:'एफिड (लाही) आलु बीउ उत्पादनमा किन विशेष खतरनाक छ?', en:'Why are aphids particularly serious in potato seed production?'},
+        opts:{ja:['葉を食べて光合成を妨げるから','PVY等のウイルス病を株から株へ伝播するから','土の中でいもを直接食べるから','塊茎の色を変えるから'],
+              ne:['पात खाएर प्रकाशसंश्लेषण रोक्छ','PVY जस्ता भाइरस रोग बोटबाट बोटमा फैलाउँछ','माटोभित्र कन्द सिधा खान्छ','कन्दको रङ फेर्छ'],
+              en:['They eat leaves and prevent photosynthesis','They transmit viruses like PVY from plant to plant','They eat tubers directly in soil','They change tuber colour']},
+        ans:1,
+        exp: {ja:'アブラムシはウイルスのベクター（媒介者）です。わずか数匹でも圃場全体にウイルスが広がるため、徹底防除が必要です。',
+              ne:'एफिड भाइरसका वाहक हुन्। थोरैले पनि सम्पूर्ण खेतमा भाइरस फैलाउन सक्ने हुनाले कडा नियन्त्रण आवश्यक छ।',
+              en:'Aphids are virus vectors. Even a few can spread viruses across an entire field, so thorough control is essential.'} },
+      { lv:3,
+        q:   {ja:'連作（同じ畑で毎年ジャガイモを作ること）を避ける主な理由は？', ne:'एउटै खेतमा हरेक वर्ष आलु लगाउनु (एकलखेती) किन हानिकारक छ?', en:'Why should potatoes not be grown in the same field every year?'},
+        opts:{ja:['土壌が肥えすぎるから','土壌病害虫（そうか病菌・シストセンチュウ等）が蓄積し収量が低下するから','水の使用量が増えるから','特に問題はない'],
+              ne:['माटो धेरै उर्वर हुन्छ','माटोको रोग तथा किरा (खुर्पेटे रोग, सिस्ट सूत्रकृमि) जम्मा भएर उत्पादन घट्छ','पानीको प्रयोग बढ्छ','कुनै समस्या छैन'],
+              en:['The soil becomes too fertile','Soil pathogens (scab fungus, cyst nematodes, etc.) accumulate and reduce yield','Water use increases','No problem at all']},
+        ans:1,
+        exp: {ja:'3〜4年輪作することで土壌病原菌密度が自然低下します。アブラナ科・マメ科との輪作が特に効果的です。',
+              ne:'३–४ वर्षे घुमावदार खेतीले माटोका रोगजनकको घनत्व प्राकृतिक रूपमा घटाउँछ। तोरी र दलहन बालीसँग घुमाउनु विशेष प्रभावकारी छ।',
+              en:'A 3–4 year rotation naturally reduces soil pathogen density. Rotation with brassicas and legumes is especially effective.'} }
     ]
   },
   hilling: {
-    name: '培土・除草', icon: '⛏️', color: '#9c7a3e',
+    name: {ja:'培土・除草', ne:'माटो थुपार्ने र झार', en:'Hilling & Weeding'},
+    sub:  {ja:'土寄せ・雑草管理', ne:'माटो थुपार्ने, झार नियन्त्रण', en:'Earthing Up, Weed Control'},
+    icon: '⛏️', color: '#9c7a3e',
     qs: [
-      { lv:1, q:'「培土（土寄せ）」を行う最も重要な目的は何ですか？',
-        opts:['見た目をよくするため','塊茎の緑化を防ぎ、新しいいも着生スペースを増やすため','灌水量を減らすため','根の水分吸収を止めるため'],
-        ans:1, exp:'塊茎が地表に出ると光を受けて緑化（ソラニン増加）します。培土で覆土することで緑化防止と着いも数の増加が同時に達成できます。' },
-      { lv:2, q:'培土（土寄せ）の適切な時期はいつですか？',
-        opts:['植え付け直後（芽が出る前）','茎の高さが15〜20cmになった頃（出芽後2〜3週）','いもが肥大し始めた頃（開花期）','収穫直前'],
-        ans:1, exp:'出芽後2〜3週・茎高15〜20cmが適期です。この時期の培土が最もいも数増加に効果的です。' },
-      { lv:3, q:'雑草管理でマルチングを使う主な利点は？',
-        opts:['収穫が楽になるから','地温維持・保湿・雑草抑制を同時に達成できるから','肥料が不要になるから','病気が完全になくなるから'],
-        ans:1, exp:'ワラや黒色ポリフィルムのマルチは、雑草抑制・土壌水分保持・地温調節を一度に行います。' }
+      { lv:1,
+        q:   {ja:'「培土（土寄せ）」を行う最も重要な目的は何ですか？', ne:'माटो थुपार्ने (Hilling) को सबैभन्दा महत्त्वपूर्ण उद्देश्य के हो?', en:'What is the most important purpose of hilling (earthing up)?'},
+        opts:{ja:['見た目をよくするため','塊茎の緑化を防ぎ、新しいいも着生スペースを増やすため','灌水量を減らすため','根の水分吸収を止めるため'],
+              ne:['देखावट राम्रो बनाउन','कन्द हरियो हुन रोक्न र नयाँ कन्द बस्ने ठाउँ बढाउन','सिँचाइ घटाउन','जराले पानी सोस्न रोक्न'],
+              en:['To improve appearance','To prevent tuber greening and increase space for new tubers','To reduce irrigation','To stop roots absorbing water']},
+        ans:1,
+        exp: {ja:'塊茎が地表に出ると光を受けて緑化（ソラニン増加）します。培土で覆土することで緑化防止と着いも数の増加が同時に達成できます。',
+              ne:'कन्द जमिनमाथि निस्किँदा प्रकाशले हरियो बनाउँछ (सोलानिन बढ्छ)। माटो थुपार्दा हरियो हुन रोकिन्छ र कन्दको संख्या पनि बढ्छ।',
+              en:'Tubers exposed to light turn green (solanine increases). Hilling prevents greening and increases tuber numbers simultaneously.'} },
+      { lv:2,
+        q:   {ja:'培土（土寄せ）の適切な時期はいつですか？', ne:'माटो थुपार्ने उचित समय कुन हो?', en:'When is the right time to carry out hilling?'},
+        opts:{ja:['植え付け直後（芽が出る前）','茎の高さが15〜20cmになった頃（出芽後2〜3週）','いもが肥大し始めた頃（開花期）','収穫直前'],
+              ne:['रोपाई गरेपछि तुरुन्त (अङ्कुर उम्रनुअघि)','उम्रेको २–३ हप्तामा, बिरुवाको उचाइ १५–२० से.मि. हुँदा','कन्द फैलन थालेपछि (फूल फुल्ने समय)','कटाइ अघि'],
+              en:['Immediately after planting (before sprouting)','2–3 weeks after emergence when stems are 15–20 cm tall','When tubers start bulking (flowering stage)','Just before harvest']},
+        ans:1,
+        exp: {ja:'出芽後2〜3週・茎高15〜20cmが適期です。この時期の培土が最もいも数増加に効果的です。',
+              ne:'उम्रेको २–३ हप्ता, बिरुवाको उचाइ १५–२० से.मि. उचित समय हो। यस बेलाको माटो थुपार्नु कन्द संख्या बढाउन सबैभन्दा प्रभावकारी छ।',
+              en:'2–3 weeks after emergence, when stems are 15–20 cm, is the right time. Hilling at this stage is most effective for increasing tuber numbers.'} },
+      { lv:3,
+        q:   {ja:'雑草管理でマルチングを使う主な利点は？', ne:'झार नियन्त्रणमा मल्चिङ प्रयोग गर्नुको मुख्य फाइदा के हो?', en:'What is the main benefit of using mulching for weed management?'},
+        opts:{ja:['収穫が楽になるから','地温維持・保湿・雑草抑制を同時に達成できるから','肥料が不要になるから','病気が完全になくなるから'],
+              ne:['कटाइ सजिलो हुन्छ','जमिनको तापक्रम, आर्द्रता र झार एकैसाथ नियन्त्रण हुन्छ','मल चाहिँदैन','रोग पूर्णतः हराउँछ'],
+              en:['Harvest becomes easier','Soil temperature, moisture and weed suppression are all achieved at once','Fertiliser becomes unnecessary','Disease disappears completely']},
+        ans:1,
+        exp: {ja:'ワラや黒色ポリフィルムのマルチは、雑草抑制・土壌水分保持・地温調節を一度に行います。',
+              ne:'पराल वा कालो प्लास्टिक मल्चले झार नियन्त्रण, माटोको आर्द्रता बचत र तापक्रम नियन्त्रण एकैचोटि गर्छ।',
+              en:'Straw or black plastic mulch simultaneously suppresses weeds, retains soil moisture and regulates soil temperature.'} }
     ]
   },
   harvest: {
-    name: '収穫・判断', icon: '🥔', color: '#c8843e',
+    name: {ja:'収穫・判断', ne:'कटाइ र निर्णय', en:'Harvest & Judgment'},
+    sub:  {ja:'適期・損傷防止', ne:'उचित समय, क्षति रोकथाम', en:'Timing, Damage Prevention'},
+    icon: '🥔', color: '#c8843e',
     qs: [
-      { lv:1, q:'ジャガイモの収穫適期を判断する最も確実なサインは？',
-        opts:['植え付けから丸60日が経過した','地上部（茎葉）が自然に黄変・枯死した','花が咲いた','いもの色が変わった'],
-        ans:1, exp:'地上部の自然枯死は養分転流完了のサインです。枯死後1〜2週間置くことで皮が硬くなり貯蔵性が向上します。' },
-      { lv:2, q:'収穫時の機械・手具による塊茎損傷（打撲・切断）を減らすために最も重要なことは？',
-        opts:['高温乾燥期に収穫する','土壌が適度に湿った状態（雨の翌日等）で収穫し、慎重に扱う','なるべく速く収穫する','収穫後すぐに出荷する'],
-        ans:1, exp:'過乾燥や過湿の土壌は損傷を増やします。収穫後の打撲傷は腐敗の主因になるため、丁寧な取り扱いが重要です。' },
-      { lv:3, q:'収穫後に高温・日光が当たる場所に放置するとどうなりますか？',
-        opts:['糖度が上がって美味しくなる','塊茎が緑化してソラニン（有毒物質）が増加する','水分が飛んで保存しやすくなる','でんぷんが増える'],
-        ans:1, exp:'光に当たると緑化が起き有毒アルカロイド（ソラニン）が増加します。食用・種芋どちらも品質低下につながります。' }
+      { lv:1,
+        q:   {ja:'ジャガイモの収穫適期を判断する最も確実なサインは？', ne:'आलु काट्ने सही समय पहिचान गर्ने सबैभन्दा भरपर्दो संकेत के हो?', en:'What is the most reliable sign that potatoes are ready to harvest?'},
+        opts:{ja:['植え付けから丸60日が経過した','地上部（茎葉）が自然に黄変・枯死した','花が咲いた','いもの色が変わった'],
+              ne:['रोपेको ठ्याक्कै ६० दिन भयो','माथिको भाग (हाँगापात) प्राकृतिक रूपमा पहेँलो भएर मरेको छ','फूल फुलेको छ','कन्दको रङ फेरिएको छ'],
+              en:['Exactly 60 days since planting','The above-ground parts (stems and leaves) have naturally yellowed and died','Flowers have appeared','Tuber colour has changed']},
+        ans:1,
+        exp: {ja:'地上部の自然枯死は養分転流完了のサインです。枯死後1〜2週間置くことで皮が硬くなり貯蔵性が向上します。',
+              ne:'माथिको भागको प्राकृतिक मृत्यु पोषण स्थानान्तरण सकिएको संकेत हो। मरेको १–२ हप्तापछि खाल कडा हुन्छ र भण्डारण राम्रो हुन्छ।',
+              en:'Natural die-back above ground signals completed nutrient translocation. Waiting 1–2 weeks after die-back hardens the skin and improves storability.'} },
+      { lv:2,
+        q:   {ja:'収穫時の機械・手具による塊茎損傷（打撲・切断）を減らすために最も重要なことは？', ne:'कटाइका बेला औजारले कन्दमा चोट (खोँचा, काटिनु) कम गर्न सबैभन्दा महत्त्वपूर्ण कुरा के हो?', en:'What is most important for reducing tuber damage (bruising, cutting) during harvest?'},
+        opts:{ja:['高温乾燥期に収穫する','土壌が適度に湿った状態（雨の翌日等）で収穫し、慎重に扱う','なるべく速く収穫する','収穫後すぐに出荷する'],
+              ne:['उच्च तापक्रम र सुक्खामा कटाइ गर्ने','माटो उचित रूपमा ओसिलो हुँदा (वर्षाको भोलिपल्ट आदि) सावधानीपूर्वक काट्ने','जतिसक्दो छिटो काट्ने','काटेलगत्तै पठाउने'],
+              en:['Harvest in hot dry conditions','Harvest when soil is moderately moist (e.g. day after rain) and handle carefully','Harvest as fast as possible','Ship immediately after harvest']},
+        ans:1,
+        exp: {ja:'過乾燥や過湿の土壌は損傷を増やします。収穫後の打撲傷は腐敗の主因になるため、丁寧な取り扱いが重要です。',
+              ne:'अत्यधिक सुक्खा वा ओसिलो माटोले चोट बढाउँछ। कटाइपछिको खोँचा सड्नुको मुख्य कारण हुन्छ, त्यसैले सावधानीपूर्वक ह्यान्डलिङ जरुरी छ।',
+              en:'Excessively dry or wet soil increases damage. Post-harvest bruising is a main cause of rot, so careful handling is essential.'} },
+      { lv:3,
+        q:   {ja:'収穫後に高温・日光が当たる場所に放置するとどうなりますか？', ne:'कटाइपछि उच्च तापक्रम वा घाम लाग्ने ठाउँमा राख्दा के हुन्छ?', en:'What happens if harvested potatoes are left in heat and sunlight?'},
+        opts:{ja:['糖度が上がって美味しくなる','塊茎が緑化してソラニン（有毒物質）が増加する','水分が飛んで保存しやすくなる','でんぷんが増える'],
+              ne:['चिनीको मात्रा बढेर मिठो हुन्छ','कन्द हरियो भएर सोलानिन (विषालु पदार्थ) बढ्छ','पानी सुकेर भण्डारण सजिलो हुन्छ','स्टार्च बढ्छ'],
+              en:['Sugar increases and taste improves','Tubers turn green and solanine (toxic substance) increases','Moisture evaporates making storage easier','Starch increases']},
+        ans:1,
+        exp: {ja:'光に当たると緑化が起き有毒アルカロイド（ソラニン）が増加します。食用・種芋どちらも品質低下につながります。',
+              ne:'प्रकाशमा राख्दा हरियो हुन्छ र विषालु एल्कालोइड (सोलानिन) बढ्छ। खाने र बीउ दुवैका लागि गुणस्तर खराब हुन्छ।',
+              en:'Light exposure causes greening and increases toxic alkaloids (solanine). This degrades quality for both table use and seed purposes.'} }
     ]
   },
   storage: {
-    name: '貯蔵・出荷', icon: '🏚️', color: '#7a5c2e',
+    name: {ja:'貯蔵・出荷', ne:'भण्डारण र ढुवानी', en:'Storage & Shipment'},
+    sub:  {ja:'キュアリング・保存', ne:'क्युरिङ, भण्डारण', en:'Curing, Storage'},
+    icon: '🏚️', color: '#7a5c2e',
     qs: [
-      { lv:1, q:'ジャガイモの長期貯蔵に最適な環境はどれですか？',
-        opts:['高温多湿（25℃以上）','冷涼暗所（4〜8℃・湿度85〜90%）','冷凍（0℃以下）','直射日光の当たる通風の良い場所'],
-        ans:1, exp:'4〜8℃・暗所・やや高湿度が最適です。冷凍はでんぷんを糖化させ品質が落ちます。光は緑化を引き起こします。' },
-      { lv:2, q:'「キュアリング（curing）」とはどのような処理ですか？',
-        opts:['農薬で消毒すること','収穫後に15〜20℃・高湿度で1〜2週間置き、傷口にコルク層を形成させること','低温で急速冷却すること','水洗いして乾燥させること'],
-        ans:1, exp:'キュアリングで傷口がコルク化し、貯蔵中の腐敗・水分蒸散が大幅に減少します。特に傷の多い収穫後は必須の処理です。' },
-      { lv:3, q:'出荷前に選別・等級分け（グレーディング）を行う主な目的は？',
-        opts:['作業量を増やすため','市場での価格向上・クレーム防止・ブランド確立のため','全量が同一価格になるため','腐敗を完全になくすため'],
-        ans:1, exp:'大きさ・形・病傷の有無による選別は、高品質ロットの価格プレミアムを獲得し、農家の収入向上に直結します。' }
+      { lv:1,
+        q:   {ja:'ジャガイモの長期貯蔵に最適な環境はどれですか？', ne:'आलु लामो समय भण्डारण गर्ने उत्तम वातावरण कुन हो?', en:'What environment is optimal for long-term potato storage?'},
+        opts:{ja:['高温多湿（25℃以上）','冷涼暗所（4〜8℃・湿度85〜90%）','冷凍（0℃以下）','直射日光の当たる通風の良い場所'],
+              ne:['उच्च तापक्रम र आर्द्रता (25°C+)','चिसो अँध्यारो ठाउँ (4–8°C, आर्द्रता 85–90%)','फ्रिज (0°C भन्दा कम)','सिधा घाम लाग्ने हावादार ठाउँ'],
+              en:['Hot and humid (25°C+)','Cool dark place (4–8°C, humidity 85–90%)','Frozen (below 0°C)','Well-ventilated place in direct sunlight']},
+        ans:1,
+        exp: {ja:'4〜8℃・暗所・やや高湿度が最適です。冷凍はでんぷんを糖化させ品質が落ちます。光は緑化を引き起こします。',
+              ne:'4–8°C, अँध्यारो र केही उच्च आर्द्रता उत्तम हो। जम्माउँदा स्टार्च चिनीमा बदलिन्छ। प्रकाशले हरियो बनाउँछ।',
+              en:'4–8°C, dark and slightly humid is optimal. Freezing converts starch to sugar. Light causes greening.'} },
+      { lv:2,
+        q:   {ja:'「キュアリング（curing）」とはどのような処理ですか？', ne:'क्युरिङ (Curing) भनेको कस्तो प्रक्रिया हो?', en:'What does curing involve?'},
+        opts:{ja:['農薬で消毒すること','収穫後に15〜20℃・高湿度で1〜2週間置き、傷口にコルク層を形成させること','低温で急速冷却すること','水洗いして乾燥させること'],
+              ne:['विषादीले विसंक्रमण गर्नु','कटाइपछि 15–20°C र उच्च आर्द्रतामा १–२ हप्ता राखी घाउमा कर्क तह बनाउनु','चिसोमा छिटो चिसाउनु','पानीले धोएर सुकाउनु'],
+              en:['Disinfecting with pesticides','Keeping at 15–20°C and high humidity for 1–2 weeks after harvest to form a cork layer over wounds','Rapid cooling at low temperature','Washing with water and drying']},
+        ans:1,
+        exp: {ja:'キュアリングで傷口がコルク化し、貯蔵中の腐敗・水分蒸散が大幅に減少します。特に傷の多い収穫後は必須の処理です。',
+              ne:'क्युरिङले घाउ कर्किन्छ र भण्डारणमा सड्ने र पानी उड्ने मात्रा धेरै कम हुन्छ। चोट बढी लागेको कटाइपछि विशेष आवश्यक प्रक्रिया हो।',
+              en:'Curing corks over wounds, greatly reducing rot and moisture loss during storage. Especially essential after harvests with many damaged tubers.'} },
+      { lv:3,
+        q:   {ja:'出荷前に選別・等級分け（グレーディング）を行う主な目的は？', ne:'ढुवानीअघि छनोट र ग्रेडिङ गर्नुको मुख्य उद्देश्य के हो?', en:'What is the main purpose of sorting and grading potatoes before shipment?'},
+        opts:{ja:['作業量を増やすため','市場での価格向上・クレーム防止・ブランド確立のため','全量が同一価格になるため','腐敗を完全になくすため'],
+              ne:['काम बढाउन','बजारमा राम्रो मूल्य, गुनासो कम र ब्राण्ड स्थापना गर्न','सबै एउटै मूल्यमा बिक्री गर्न','सड्ने पूर्णतः रोक्न'],
+              en:['To increase workload','To obtain better market price, prevent complaints and establish a brand','So all sell at the same price','To completely eliminate rot']},
+        ans:1,
+        exp: {ja:'大きさ・形・病傷の有無による選別は、高品質ロットの価格プレミアムを獲得し、農家の収入向上に直結します。',
+              ne:'आकार, आकृति र रोग/क्षतिको आधारमा छनोटले उच्च गुणस्तरको लटको प्रिमियम मूल्य पाउन मद्दत गर्छ र किसानको आम्दानी सिधै बढ्छ।',
+              en:'Sorting by size, shape and disease/damage helps obtain premium prices for high-quality lots, directly increasing farmer income.'} }
     ]
   },
   marketing: {
-    name: '販売・市場', icon: '💰', color: '#c0392b',
+    name: {ja:'販売・市場', ne:'बिक्री र बजार', en:'Sales & Market'},
+    sub:  {ja:'価格・流通・交渉', ne:'मूल्य, ढुवानी, वार्ता', en:'Price, Distribution, Negotiation'},
+    icon: '💰', color: '#c0392b',
     qs: [
-      { lv:1, q:'収穫直後に急いで全量を市場に出すことの主なデメリットは何ですか？',
-        opts:['輸送コストが下がる','収穫期に供給が集中して価格が暴落しやすい','品質が上がる','バイヤーに喜ばれる'],
-        ans:1, exp:'収穫期は農家が一斉に出荷するため市場が供給過多になり、価格が大きく下落します。貯蔵や出荷時期の分散が収入安定に有効です。' },
-      { lv:2, q:'農家グループ（協同組合）で共同出荷する最大のメリットは何ですか？',
-        opts:['全員が同じ品種を作らなければならない','まとまった量で交渉力が高まり、輸送コスト削減・有利な価格交渉が可能になる','個人より手続きが面倒になる','補助金が必ずもらえる'],
-        ans:1, exp:'個人では小量で買い叩かれがちですが、グループでまとめることで仲買人への価格交渉力が生まれ、輸送・資材コストも分担できます。' },
-      { lv:3, q:'市場価格の情報を事前に把握しておくことで農家が得られる最も重要なメリットは？',
-        opts:['収量が増える','不当に低い価格での買い叩きを防ぎ、適正価格での販売交渉ができる','農薬代が節約できる','品質が自動的に向上する'],
-        ans:1, exp:'価格情報がなければバイヤーに一方的な低価格を提示されても断れません。ラジオ・スマートフォン・農業普及員から市場価格を事前収集する習慣が収入に直結します。' }
+      { lv:1,
+        q:   {ja:'収穫直後に急いで全量を市場に出すことの主なデメリットは何ですか？', ne:'कटाइ गरेलगत्तै हतारमा सबै बजारमा पठाउनुको मुख्य हानि के हो?', en:'What is the main disadvantage of rushing all produce to market immediately after harvest?'},
+        opts:{ja:['輸送コストが下がる','収穫期に供給が集中して価格が暴落しやすい','品質が上がる','バイヤーに喜ばれる'],
+              ne:['ढुवानी खर्च घट्छ','कटाइ मौसममा आपूर्ति एकैपटक बढेर मूल्य धेरै घट्छ','गुणस्तर बढ्छ','खरिदकर्ता खुसी हुन्छन्'],
+              en:['Transport costs fall','Supply concentrates at harvest time, making prices crash','Quality improves','Buyers are pleased']},
+        ans:1,
+        exp: {ja:'収穫期は農家が一斉に出荷するため市場が供給過多になり、価格が大きく下落します。貯蔵や出荷時期の分散が収入安定に有効です。',
+              ne:'कटाइ मौसममा सबै किसान एकैसाथ बेच्ने हुनाले बजारमा आपूर्ति बढी हुन्छ र मूल्य धेरै घट्छ। भण्डारण र ढुवानी समय फैलाउनु आम्दानी स्थिर गर्न प्रभावकारी छ।',
+              en:'At harvest time all farmers sell at once, causing oversupply and sharp price falls. Staggering storage and shipment timing is effective for stable income.'} },
+      { lv:2,
+        q:   {ja:'農家グループ（協同組合）で共同出荷する最大のメリットは何ですか？', ne:'किसान समूह (सहकारी) मार्फत सामूहिक बिक्री गर्नुको सबैभन्दा ठूलो फाइदा के हो?', en:'What is the greatest benefit of collective marketing through a farmer group (cooperative)?'},
+        opts:{ja:['全員が同じ品種を作らなければならない','まとまった量で交渉力が高まり、輸送コスト削減・有利な価格交渉が可能になる','個人より手続きが面倒になる','補助金が必ずもらえる'],
+              ne:['सबैले एउटै जात लगाउनुपर्छ','एकत्रित मात्राले सौदाबाजी शक्ति बढ्छ र ढुवानी खर्च घट्छ','व्यक्तिगतभन्दा झन्झटिलो हुन्छ','अनुदान पक्कै पाइन्छ'],
+              en:['Everyone must grow the same variety','Pooled volume increases bargaining power and reduces transport costs','More complicated than selling individually','Subsidies are guaranteed']},
+        ans:1,
+        exp: {ja:'個人では小量で買い叩かれがちですが、グループでまとめることで仲買人への価格交渉力が生まれ、輸送・資材コストも分担できます。',
+              ne:'व्यक्तिगत रूपमा थोरै मात्राले सस्तोमा बेच्नुपर्ने हुन्छ तर समूहमा एकत्रित गर्दा बिचौलियासँग मोलमोलाइ शक्ति बढ्छ र ढुवानी खर्च पनि बाँड्न पाइन्छ।',
+              en:'Individuals selling small quantities are often underpaid, but pooling as a group creates bargaining power against middlemen and allows sharing of transport costs.'} },
+      { lv:3,
+        q:   {ja:'市場価格の情報を事前に把握しておくことで農家が得られる最も重要なメリットは？', ne:'बजार मूल्यको जानकारी पहिले नै थाहा पाउनुले किसानलाई सबैभन्दा महत्त्वपूर्ण फाइदा के दिन्छ?', en:'What is the most important benefit of knowing market prices in advance?'},
+        opts:{ja:['収量が増える','不当に低い価格での買い叩きを防ぎ、適正価格での販売交渉ができる','農薬代が節約できる','品質が自動的に向上する'],
+              ne:['उत्पादन बढ्छ','अनुचित कम मूल्यमा बेच्न बाट जोगिन र उचित मूल्यमा सौदाबाजी गर्न सकिन्छ','विषादी खर्च बच्छ','गुणस्तर अपनआप बढ्छ'],
+              en:['Yield increases','Prevents being undersold and enables negotiating a fair price','Pesticide costs are saved','Quality improves automatically']},
+        ans:1,
+        exp: {ja:'価格情報がなければバイヤーに一方的な低価格を提示されても断れません。ラジオ・スマートフォン・農業普及員から市場価格を事前収集する習慣が収入に直結します。',
+              ne:'मूल्य थाहा नभए खरिदकर्ताले एकतर्फी कम मूल्य प्रस्ताव गरे पनि अस्वीकार गर्न सकिँदैन। रेडियो, स्मार्टफोन र कृषि विस्तारकर्ताबाट मूल्य सङ्कलन गर्ने बानी आम्दानीसँग सिधा जोडिएको छ।',
+              en:'Without price information, farmers cannot refuse unfairly low offers. Habitually collecting market prices from radio, smartphones and extension workers directly links to income.'} }
     ]
   },
   learning: {
-    name: '技術学習', icon: '📚', color: '#6a4c9c',
+    name: {ja:'技術学習', ne:'प्रविधि सिकाइ', en:'Technical Learning'},
+    sub:  {ja:'情報収集・研修', ne:'जानकारी, तालिम', en:'Information, Training'},
+    icon: '📚', color: '#6a4c9c',
     qs: [
-      { lv:1, q:'新しい栽培技術や農業情報を得るために最も活用できる身近な資源はどれですか？',
-        opts:['何もせず自分の経験だけに頼る','農業普及員・農業訓練センター・農家グループの勉強会','テレビコマーシャル','農薬・肥料の販売店の宣伝のみ'],
-        ans:1, exp:'農業普及員は無料で圃場訪問・技術指導を行います。農家グループの勉強会では仲間の実践経験も学べる貴重な機会です。' },
-      { lv:2, q:'試験区（小さな区画でのテスト栽培）を設けて新技術を試すことの利点は？',
-        opts:['全体の収量が必ず増える','リスクを最小化しながら自分の畑での効果を実際に確かめられる','農薬が不要になる','政府から補助金がもらえる'],
-        ans:1, exp:'新技術を全面導入する前に小区画で試すことで、失敗リスクを抑えながら「自分の土地・気候での効果」を科学的に検証できます。' },
-      { lv:3, q:'栽培記録（日誌）をつけることが長期的な農業経営に役立つ最も重要な理由は？',
-        opts:['政府への報告義務があるから','気象・施肥・収量データの蓄積により、毎年の改善点が明確になり経営判断の精度が上がるから','記録するだけで収量が増えるから','補助金申請に必ず必要だから'],
-        ans:1, exp:'「何をしたときに収量が増えたか」を記録・比較することで、自分の畑に最適な栽培方法が科学的に導き出せます。記録は農家にとって最も安価な研究ツールです。' }
+      { lv:1,
+        q:   {ja:'新しい栽培技術や農業情報を得るために最も活用できる身近な資源はどれですか？', ne:'नयाँ खेती प्रविधि र कृषि जानकारी पाउन सबैभन्दा उपयोगी स्थानीय स्रोत कुन हो?', en:'What is the most useful local resource for obtaining new farming techniques and agricultural information?'},
+        opts:{ja:['何もせず自分の経験だけに頼る','農業普及員・農業訓練センター・農家グループの勉強会','テレビコマーシャル','農薬・肥料の販売店の宣伝のみ'],
+              ne:['कुनै प्रयास नगरी आफ्नै अनुभवमा मात्र भर पर्ने','कृषि विस्तारकर्ता, कृषि तालिम केन्द्र, किसान समूहका अध्ययन बैठक','टेलिभिजन विज्ञापन','विषादी र मल पसलको प्रचारमात्र'],
+              en:['Relying only on own experience without effort','Agricultural extension workers, training centres, farmer group study sessions','TV commercials','Only advertisements from pesticide and fertiliser shops']},
+        ans:1,
+        exp: {ja:'農業普及員は無料で圃場訪問・技術指導を行います。農家グループの勉強会では仲間の実践経験も学べる貴重な機会です。',
+              ne:'कृषि विस्तारकर्ताले निःशुल्क खेत भ्रमण र प्राविधिक सल्लाह दिन्छन्। किसान समूहका बैठकमा साथीहरूको व्यावहारिक अनुभव पनि सिक्न पाइन्छ।',
+              en:'Extension workers provide free field visits and technical guidance. Farmer group meetings are valuable opportunities to learn from peers\' practical experience.'} },
+      { lv:2,
+        q:   {ja:'試験区（小さな区画でのテスト栽培）を設けて新技術を試すことの利点は？', ne:'परीक्षण प्लट (सानो क्षेत्रमा परीक्षण खेती) राखेर नयाँ प्रविधि अजमाउनुको फाइदा के हो?', en:'What is the benefit of testing new techniques in a trial plot (small test area)?'},
+        opts:{ja:['全体の収量が必ず増える','リスクを最小化しながら自分の畑での効果を実際に確かめられる','農薬が不要になる','政府から補助金がもらえる'],
+              ne:['समग्र उत्पादन पक्कै बढ्छ','जोखिम न्यूनतम गर्दै आफ्नो खेतमा प्रभाव वास्तवमा जाँच गर्न पाइन्छ','विषादी चाहिँदैन','सरकारबाट अनुदान पाइन्छ'],
+              en:['Overall yield definitely increases','You can verify the actual effect in your own field while minimising risk','Pesticides become unnecessary','Government subsidies are received']},
+        ans:1,
+        exp: {ja:'新技術を全面導入する前に小区画で試すことで、失敗リスクを抑えながら「自分の土地・気候での効果」を科学的に検証できます。',
+              ne:'नयाँ प्रविधि पूर्ण रूपमा लागू गर्नुअघि सानो क्षेत्रमा परीक्षण गर्दा असफलताको जोखिम कम हुन्छ र "आफ्नो जमिन/मौसममा प्रभाव" वैज्ञानिक रूपमा प्रमाणित गर्न सकिन्छ।',
+              en:'Testing in a small plot before full adoption verifies the effect in your specific land and climate while limiting failure risk.'} },
+      { lv:3,
+        q:   {ja:'栽培記録（日誌）をつけることが長期的な農業経営に役立つ最も重要な理由は？', ne:'खेती अभिलेख (डायरी) राख्नु दीर्घकालीन कृषि व्यवस्थापनमा सबैभन्दा महत्त्वपूर्ण किन हो?', en:'Why is keeping a cultivation record (diary) most important for long-term farm management?'},
+        opts:{ja:['政府への報告義務があるから','気象・施肥・収量データの蓄積により、毎年の改善点が明確になり経営判断の精度が上がるから','記録するだけで収量が増えるから','補助金申請に必ず必要だから'],
+              ne:['सरकारलाई रिपोर्ट गर्ने दायित्व छ','मौसम, मल र उत्पादन डेटा जम्मा गर्दा हरेक वर्ष सुधारिने कुरा स्पष्ट हुन्छ र व्यवस्थापन निर्णय सुधार्छ','लेख्नै मात्रले उत्पादन बढ्छ','अनुदान आवेदनमा पक्कै चाहिन्छ'],
+              en:['There is a government reporting obligation','Accumulating weather, fertilisation and yield data clarifies annual improvements and sharpens management decisions','Simply recording increases yield','Always required for subsidy applications']},
+        ans:1,
+        exp: {ja:'「何をしたときに収量が増えたか」を記録・比較することで、自分の畑に最適な栽培方法が科学的に導き出せます。記録は農家にとって最も安価な研究ツールです。',
+              ne:'"के गर्दा उत्पादन बढ्यो" भनेर लेखेर तुलना गर्दा आफ्नो खेतमा उत्तम खेती विधि वैज्ञानिक रूपमा निकाल्न सकिन्छ। अभिलेख किसानका लागि सबैभन्दा सस्तो अनुसन्धान उपकरण हो।',
+              en:'Recording and comparing "what increased yield" allows you to scientifically derive the best farming method for your field. Records are the cheapest research tool for farmers.'} }
     ]
   }
 };
+
+// ============================================================
+// UI TRANSLATIONS
+// ============================================================
+const UI = {
+  ja: {
+    appTitle:'じゃがいもマスター', appSub:'NEPAL FARMER SKILL ASSESSMENT',
+    evalHead:'📝 評価情報の入力',
+    nameLabel:'農家名・氏名', namePh:'例：Ramesh Thapa',
+    villageLabel:'地区・村名', villagePh:'例：Jumla',
+    emailLabel:'📧 メールアドレス（任意）', emailPh:'結果レポートをメールで受け取る場合のみ',
+    emailNote:'※ メールはお使いのメールアプリから送信されます',
+    catHead:'🌾 評価カテゴリ（10項目）',
+    startBtn:'🚜 評価を開始する',
+    nocat:'⚠️ カテゴリを1つ以上選択してください',
+    lv1:'★☆☆ 基礎', lv2:'★★☆ 応用', lv3:'★★★ 上級',
+    correct:'✅ 正解！', wrong:'❌ 不正解',
+    nextBtn:'次の問題へ →', lastBtn:'📊 結果を見る →',
+    rLabel:'SKILL ASSESSMENT REPORT', rTitle:'ジャガイモ栽培<br>技術診断レポート', rDenom:'/ 100点',
+    rOverallHead:'🏆 総合評価レベル', rCatHead:'📊 カテゴリ別スコア詳細',
+    rLevelHead:'📈 技術レベル分布', rAdviceHead:'🌾 次のステップ・アドバイス',
+    rEmailHead:'📬 結果レポートをメールで受け取る',
+    tblItem:'評価項目', tblCorrect:'正解数', tblScore:'スコア', tblBar:'進捗バー',
+    levelSub:'総合スコア {s}点 / {d}',
+    btnMail:'📧 メールアプリで送信する',
+    sentNotice:'✅ メールアプリが開きました。送信して完了です。',
+    btnRestart:'🔄 もう一度評価する',
+    backConfirm:'評価を中断して最初に戻りますか？',
+    toastMail:'📬 メールアプリを開きました',
+    lv5:'Outstanding（卓越）', lv4:'Excellent（優秀）', lv3g:'Good（良好）',
+    lv2g:'Needs Improvement（要向上）', lv1g:'Unsatisfactory（入門段階）',
+    lvDesc5:'90〜100点', lvDesc4:'80〜89点', lvDesc3:'70〜79点', lvDesc2:'60〜69点', lvDesc1:'60点未満',
+  },
+  ne: {
+    appTitle:'आलु मास्टर', appSub:'नेपाली किसान सीप मूल्याङ्कन',
+    evalHead:'📝 मूल्याङ्कन जानकारी',
+    nameLabel:'किसानको नाम', namePh:'उदा: Ramesh Thapa',
+    villageLabel:'जिल्ला / गाउँ', villagePh:'उदा: Jumla',
+    emailLabel:'📧 इमेल ठेगाना (ऐच्छिक)', emailPh:'नतिजा रिपोर्ट इमेलमा चाहने भए मात्र',
+    emailNote:'※ इमेल तपाईंको इमेल एपबाट पठाइनेछ',
+    catHead:'🌾 मूल्याङ्कन श्रेणी (१० विषय)',
+    startBtn:'🚜 मूल्याङ्कन सुरु गर्नुहोस्',
+    nocat:'⚠️ कम्तीमा एउटा श्रेणी छान्नुहोस्',
+    lv1:'★☆☆ आधारभूत', lv2:'★★☆ मध्यम', lv3:'★★★ उन्नत',
+    correct:'✅ सही!', wrong:'❌ गलत',
+    nextBtn:'अर्को प्रश्नमा जानुहोस् →', lastBtn:'📊 नतिजा हेर्नुहोस् →',
+    rLabel:'सीप मूल्याङ्कन प्रतिवेदन', rTitle:'आलु खेती<br>प्राविधिक निदान प्रतिवेदन', rDenom:'/ १०० अंक',
+    rOverallHead:'🏆 समग्र मूल्याङ्कन स्तर', rCatHead:'📊 श्रेणीगत अंक विवरण',
+    rLevelHead:'📈 प्राविधिक स्तर वितरण', rAdviceHead:'🌾 अर्को कदम र सुझाव',
+    rEmailHead:'📬 नतिजा रिपोर्ट इमेलमा प्राप्त गर्नुहोस्',
+    tblItem:'मूल्याङ्कन विषय', tblCorrect:'सही संख्या', tblScore:'अंक', tblBar:'प्रगति',
+    levelSub:'समग्र अंक {s} / {d}',
+    btnMail:'📧 इमेल एपमा पठाउनुहोस्',
+    sentNotice:'✅ इमेल एप खुल्यो। पठाएर सम्पन्न गर्नुहोस्।',
+    btnRestart:'🔄 फेरि मूल्याङ्कन गर्नुहोस्',
+    backConfirm:'मूल्याङ्कन रोकेर सुरुमा फर्कने?',
+    toastMail:'📬 इमेल एप खोलियो',
+    lv5:'Outstanding（उत्कृष्ट）', lv4:'Excellent（राम्रो）', lv3g:'Good（ठीकठाक）',
+    lv2g:'Needs Improvement（सुधार आवश्यक）', lv1g:'Unsatisfactory（प्रारम्भिक चरण）',
+    lvDesc5:'९०–१०० अंक', lvDesc4:'८०–८९ अंक', lvDesc3:'७०–७९ अंक', lvDesc2:'६०–६९ अंक', lvDesc1:'६० भन्दा कम',
+  },
+  en: {
+    appTitle:'Potato Master', appSub:'NEPAL FARMER SKILL ASSESSMENT',
+    evalHead:'📝 Assessment Information',
+    nameLabel:'Farmer Name', namePh:'e.g. Ramesh Thapa',
+    villageLabel:'District / Village', villagePh:'e.g. Jumla',
+    emailLabel:'📧 Email Address (optional)', emailPh:'Only if you want a report by email',
+    emailNote:'※ Email is sent from your email app',
+    catHead:'🌾 Assessment Categories (10 topics)',
+    startBtn:'🚜 Start Assessment',
+    nocat:'⚠️ Please select at least one category',
+    lv1:'★☆☆ Basic', lv2:'★★☆ Applied', lv3:'★★★ Advanced',
+    correct:'✅ Correct!', wrong:'❌ Incorrect',
+    nextBtn:'Next Question →', lastBtn:'📊 See Results →',
+    rLabel:'SKILL ASSESSMENT REPORT', rTitle:'Potato Cultivation<br>Technical Diagnosis Report', rDenom:'/ 100 pts',
+    rOverallHead:'🏆 Overall Assessment Level', rCatHead:'📊 Category Score Details',
+    rLevelHead:'📈 Skill Level Distribution', rAdviceHead:'🌾 Next Steps & Advice',
+    rEmailHead:'📬 Receive Result Report by Email',
+    tblItem:'Category', tblCorrect:'Correct', tblScore:'Score', tblBar:'Progress',
+    levelSub:'Total score {s} pts / {d}',
+    btnMail:'📧 Open in Email App',
+    sentNotice:'✅ Email app opened. Complete by sending.',
+    btnRestart:'🔄 Assess Again',
+    backConfirm:'Stop the assessment and return to the start?',
+    toastMail:'📬 Email app opened',
+    lv5:'Outstanding', lv4:'Excellent', lv3g:'Good',
+    lv2g:'Needs Improvement', lv1g:'Unsatisfactory',
+    lvDesc5:'90–100 pts', lvDesc4:'80–89 pts', lvDesc3:'70–79 pts', lvDesc2:'60–69 pts', lvDesc1:'Below 60 pts',
+  }
+};
+
+// ============================================================
+// LANG + HELPERS
+// ============================================================
+let lang = 'ja';
+let currentAnswerIdx = -1;
+
+function tl(o) {
+  if (o && typeof o === 'object' && !Array.isArray(o)) return o[lang] !== undefined ? o[lang] : o.ja;
+  return o;
+}
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l === 'ja' ? 'ja' : l === 'ne' ? 'ne' : 'en';
+  applyLang();
+  const active = document.querySelector('.screen.active');
+  if (!active) return;
+  if (active.id === 's-question') rerenderQForLang();
+  else if (active.id === 's-results') showResults();
+}
+
+function applyLang() {
+  const u = UI[lang];
+  document.querySelector('.himalaya-title h1').textContent = u.appTitle;
+  document.querySelector('.himalaya-title p').textContent = u.appSub;
+  document.getElementById('card-eval-head').textContent = u.evalHead;
+  document.getElementById('lbl-name').textContent = u.nameLabel;
+  document.getElementById('inp-name').placeholder = u.namePh;
+  document.getElementById('lbl-village').textContent = u.villageLabel;
+  document.getElementById('inp-village').placeholder = u.villagePh;
+  document.getElementById('lbl-email').textContent = u.emailLabel;
+  document.getElementById('inp-email').placeholder = u.emailPh;
+  document.getElementById('email-note').textContent = u.emailNote;
+  document.getElementById('cat-head').textContent = u.catHead;
+  document.getElementById('btn-start').textContent = u.startBtn;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.l === lang));
+  renderCatGrid();
+}
+
+function renderCatGrid() {
+  const existing = document.querySelectorAll('#catGrid .cat-card');
+  const currentOn = new Set([...existing].filter(e => e.classList.contains('on')).map(e => e.dataset.cat));
+  const isFirst = existing.length === 0;
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = '';
+  Object.entries(DB).forEach(([key, cat]) => {
+    const isOn = isFirst || currentOn.has(key);
+    const div = document.createElement('div');
+    div.className = 'cat-card' + (isOn ? ' on' : '');
+    div.dataset.cat = key;
+    div.onclick = function() { toggleCat(this); };
+    div.innerHTML = `<span class="c-icon">${cat.icon}</span><div class="c-name">${tl(cat.name)}</div><div class="c-sub">${tl(cat.sub)}</div><div class="c-chk"></div>`;
+    grid.appendChild(div);
+  });
+}
+
+function rerenderQForLang() {
+  if (!S.allQs.length) return;
+  const u = UI[lang];
+  const total = S.allQs.length;
+  const q = S.allQs[S.idx];
+  const meta = DB[q.cat];
+  document.getElementById('qBadge').textContent = meta.icon + ' ' + tl(meta.name);
+  document.getElementById('qCounter').textContent = (S.idx+1) + ' / ' + total;
+  document.getElementById('qDiff').textContent = q.lv===1 ? u.lv1 : q.lv===2 ? u.lv2 : u.lv3;
+  document.getElementById('qText').textContent = tl(q.q);
+  const opts = tl(q.opts);
+  document.querySelectorAll('.opt-btn').forEach((b, i) => {
+    const span = b.querySelectorAll('span')[1];
+    if (span) span.textContent = opts[i];
+  });
+  if (S.lock && currentAnswerIdx >= 0) {
+    const ok = currentAnswerIdx === q.ans;
+    document.getElementById('fbBox').innerHTML = `<div class="feedback-title">${ok ? u.correct : u.wrong}</div>${tl(q.exp)}`;
+    document.getElementById('btnNext').textContent = S.idx + 1 >= total ? u.lastBtn : u.nextBtn;
+  }
+}
 
 // ============================================================
 // STATE
@@ -784,7 +1111,7 @@ function startAssessment() {
   S.email   = document.getElementById('inp-email').value.trim();
   S.selCats = [...document.querySelectorAll('#catGrid .cat-card.on')].map(e => e.dataset.cat);
 
-  if (S.selCats.length === 0) { toast('⚠️ カテゴリを1つ以上選択してください'); return; }
+  if (S.selCats.length === 0) { toast(UI[lang].nocat); return; }
 
   S.allQs = [];
   S.selCats.forEach(cat => DB[cat].qs.forEach(q => S.allQs.push({...q, cat})));
@@ -797,20 +1124,22 @@ function startAssessment() {
 
 // ---- render question ----
 function renderQ() {
+  const u = UI[lang];
   const total = S.allQs.length;
   const q = S.allQs[S.idx];
   const meta = DB[q.cat];
   const pct = (S.idx / total) * 100;
 
-  document.getElementById('qBadge').textContent = meta.icon + ' ' + meta.name;
+  document.getElementById('qBadge').textContent = meta.icon + ' ' + tl(meta.name);
   document.getElementById('qCounter').textContent = (S.idx+1) + ' / ' + total;
   document.getElementById('qProg').style.width = pct + '%';
-  document.getElementById('qDiff').textContent = q.lv===1?'★☆☆ 基礎': q.lv===2?'★★☆ 応用':'★★★ 上級';
-  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qDiff').textContent = q.lv===1 ? u.lv1 : q.lv===2 ? u.lv2 : u.lv3;
+  document.getElementById('qText').textContent = tl(q.q);
 
   const ow = document.getElementById('optWrap');
   ow.innerHTML = '';
-  q.opts.forEach((o, i) => {
+  currentAnswerIdx = -1;
+  tl(q.opts).forEach((o, i) => {
     const b = document.createElement('button');
     b.className = 'opt-btn';
     b.innerHTML = `<span class="opt-lbl">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
@@ -826,6 +1155,8 @@ function renderQ() {
 function selectAns(idx, btn) {
   if (S.lock) return;
   S.lock = true;
+  currentAnswerIdx = idx;
+  const u = UI[lang];
   const q = S.allQs[S.idx];
   const ok = idx === q.ans;
   S.answers.push({ cat: q.cat, ok, idx });
@@ -839,10 +1170,10 @@ function selectAns(idx, btn) {
 
   const fb = document.getElementById('fbBox');
   fb.className = 'feedback-box ' + (ok ? 'ok' : 'ng');
-  fb.innerHTML = `<div class="feedback-title">${ok ? '✅ 正解！' : '❌ 不正解'}</div>${q.exp}`;
+  fb.innerHTML = `<div class="feedback-title">${ok ? u.correct : u.wrong}</div>${tl(q.exp)}`;
 
   const nextBtn = document.getElementById('btnNext');
-  nextBtn.textContent = S.idx + 1 >= S.allQs.length ? '📊 結果を見る →' : '次の問題へ →';
+  nextBtn.textContent = S.idx + 1 >= S.allQs.length ? u.lastBtn : u.nextBtn;
   document.getElementById('feedbackWrap').style.display = 'block';
 }
 
@@ -869,57 +1200,90 @@ function showResults() {
   document.getElementById('rScoreBig').textContent = score;
   document.getElementById('rName').textContent = S.name ? S.name + (S.village?' ('+S.village+')':'') : '';
 
-  // level (evaluation-system's 5 levels: Outstanding/Excellent/Good/Needs Improvement/Unsatisfactory)
+  const u = UI[lang];
+  document.getElementById('rLabel').textContent = u.rLabel;
+  document.getElementById('rTitle').innerHTML = u.rTitle;
+  document.getElementById('rDenom').textContent = u.rDenom;
+  document.getElementById('rOverallHead').textContent = u.rOverallHead;
+  document.getElementById('rCatHead').textContent = u.rCatHead;
+  document.getElementById('rLevelHead').textContent = u.rLevelHead;
+  document.getElementById('rAdviceHead').textContent = u.rAdviceHead;
+  document.getElementById('rEmailHead').textContent = u.rEmailHead;
+  document.getElementById('btnMail').textContent = u.btnMail;
+  document.getElementById('sentNotice').textContent = u.sentNotice;
+  document.getElementById('btn-restart').textContent = u.btnRestart;
+
+  // level (5 levels)
   let lv, lvClass, lvEmoji, lvDesc, comment, advice;
-  if      (score >= 90) { lv='Outstanding（卓越）'; lvClass='lv5'; lvEmoji='🌟'; lvDesc='90〜100点'; }
-  else if (score >= 80) { lv='Excellent（優秀）';   lvClass='lv4'; lvEmoji='🎖'; lvDesc='80〜89点'; }
-  else if (score >= 70) { lv='Good（良好）';         lvClass='lv3'; lvEmoji='🌿'; lvDesc='70〜79点'; }
-  else if (score >= 60) { lv='Needs Improvement（要向上）'; lvClass='lv2'; lvEmoji='🌱'; lvDesc='60〜69点'; }
-  else                  { lv='Unsatisfactory（入門段階）';   lvClass='lv1'; lvEmoji='🌰'; lvDesc='60点未満'; }
+  if      (score >= 90) { lv=u.lv5; lvClass='lv5'; lvEmoji='🌟'; lvDesc=u.lvDesc5; }
+  else if (score >= 80) { lv=u.lv4; lvClass='lv4'; lvEmoji='🎖';  lvDesc=u.lvDesc4; }
+  else if (score >= 70) { lv=u.lv3g; lvClass='lv3'; lvEmoji='🌿'; lvDesc=u.lvDesc3; }
+  else if (score >= 60) { lv=u.lv2g; lvClass='lv2'; lvEmoji='🌱'; lvDesc=u.lvDesc2; }
+  else                  { lv=u.lv1g; lvClass='lv1'; lvEmoji='🌰'; lvDesc=u.lvDesc1; }
 
   document.getElementById('levelPill').innerHTML = `<div class="level-pill ${lvClass}">${lvEmoji} ${lv}</div>`;
-  document.getElementById('levelSub').textContent = `総合スコア ${score}点 / ${lvDesc}`;
+  document.getElementById('levelSub').textContent = u.levelSub.replace('{s}', score).replace('{d}', lvDesc);
 
-  // comment + advice by level
+  // comment + advice by level (multilingual)
+  const CM = {
+    ja: {
+      c90:`<strong>卓越した技術力</strong>をお持ちです。${totalAll}問中${totalOk}問の正解は、ジャガイモ栽培の全工程を高いレベルで理解していることを証明しています。この知識を地域農業の発展に役立てましょう。`,
+      c80:`<strong>優れた技術基盤</strong>を持っています。ほぼすべての分野で実践的な知識が備わっており、安定した栽培が期待できます。`,
+      c70:`<strong>良好な基礎知識</strong>があります。弱点を重点的に学ぶことで、上位レベルへのステップアップが可能です。`,
+      c60:`基礎を固めている途中です。<strong>今知識を積み重ねることで、収量を大きく改善できる可能性があります。</strong>`,
+      c00:`学びの<strong>スタートラインに立っています</strong>。正しい知識を身につければ収量・品質ともに大きく改善できます。`,
+      a90:[{icon:'🎓',t:'知識を地域へ',b:'地域の勉強会や圃場研修でメンター役を担い、若い農家に技術を伝えましょう。'},{icon:'📊',t:'データ農業への挑戦',b:'各シーズンの収量・気象・施肥を記録し、最適条件を科学的に分析しましょう。'},{icon:'🌐',t:'新品種の試験導入',b:'疫病耐性・高収量の改良品種を試験区で導入し、地域に合う最適技術を開拓してください。'}],
+      a00:[{icon:'📖',t:'基礎から始めよう',b:'「土壌pH管理」と「認定種芋の使い方」を学ぶだけで収量が大きく変わります。'},{icon:'👨‍🌾',t:'先輩農家の圃場を訪問',b:'経験豊富な農家の畑を見学し、実際の作業を目で見て学ぶことが最短ルートです。'},{icon:'📱',t:'繰り返し練習',b:'このツールで繰り返し練習することで、知識が自然と身につきます。'}],
+      balance:{icon:'🎯',t:'バランスよく継続',b:'全カテゴリで良好な結果です。知識を実践に活かしながら、さらなる高得点を目指しましょう。'},
+    },
+    ne: {
+      c90:`<strong>उत्कृष्ट प्राविधिक दक्षता</strong> भएको देखियो। ${totalAll} प्रश्नमध्ये ${totalOk} सही उत्तर आलु खेतीका सबै चरण राम्रोसँग बुझेको प्रमाण हो।`,
+      c80:`<strong>उत्कृष्ट प्राविधिक आधार</strong> भएको देखियो। लगभग सबै क्षेत्रमा व्यावहारिक ज्ञान भएकाले स्थिर उत्पादन अपेक्षित छ।`,
+      c70:`<strong>राम्रो आधारभूत ज्ञान</strong> छ। कमजोर बिन्दुहरूमा ध्यान दिएर माथिल्लो स्तरमा पुग्न सकिन्छ।`,
+      c60:`आधार बनाउने क्रममा हुनुहुन्छ। <strong>अहिले ज्ञान जम्मा गर्दा उत्पादन धेरै सुधार्न सकिन्छ।</strong>`,
+      c00:`सिकाइको <strong>सुरुवाती चरणमा</strong> हुनुहुन्छ। सही ज्ञान पाएपछि उत्पादन र गुणस्तर दुवै सुध्रिन्छ।`,
+      a90:[{icon:'🎓',t:'ज्ञान समुदायमा फैलाउनुहोस्',b:'स्थानीय अध्ययन बैठक र खेत प्रशिक्षणमा सल्लाहकार भएर युवा किसानलाई सिकाउनुहोस्।'},{icon:'📊',t:'डेटा कृषि अपनाउनुहोस्',b:'हरेक सिजनको उत्पादन, मौसम र मल अभिलेख गरेर उत्तम अवस्था वैज्ञानिक रूपमा विश्लेषण गर्नुहोस्।'},{icon:'🌐',t:'नयाँ जात परीक्षण',b:'रोग प्रतिरोधी र उच्च उत्पादन दिने जातहरू परीक्षण प्लटमा लगाएर स्थानीय उत्तम प्रविधि खोज्नुहोस्।'}],
+      a00:[{icon:'📖',t:'आधारबाट सुरु गर्नुहोस्',b:'माटो pH व्यवस्थापन र प्रमाणित बीउ प्रयोग सिक्दा उत्पादन धेरै बदलिन्छ। कृषि कार्यालयमा सल्लाह लिनुहोस्।'},{icon:'👨‍🌾',t:'अनुभवी किसानको खेत भ्रमण',b:'अनुभवी किसानको खेत हेर्न जानुहोस् र काम आँखाले देखेर सिक्नुहोस्।'},{icon:'📱',t:'बारम्बार अभ्यास',b:'यस उपकरणमा बारम्बार अभ्यास गर्दा ज्ञान स्वाभाविक रूपमा आउँछ।'}],
+      balance:{icon:'🎯',t:'सन्तुलित रूपमा जारी राख्नुहोस्',b:'सबै श्रेणीमा राम्रो नतिजा आयो। ज्ञानलाई व्यवहारमा उतार्दै थप अंकको लागि अभ्यास जारी राख्नुहोस्।'},
+    },
+    en: {
+      c90:`You have <strong>outstanding technical skill</strong>. Answering ${totalOk} of ${totalAll} questions correctly proves a high-level understanding of all stages of potato cultivation.`,
+      c80:`You have an <strong>excellent technical foundation</strong>. Practical knowledge is in place across nearly all areas, enabling stable cultivation.`,
+      c70:`You have <strong>good basic knowledge</strong>. Focusing on weak areas will enable you to step up to the next level.`,
+      c60:`You are building your foundation. <strong>Accumulating knowledge now can greatly improve your yield.</strong>`,
+      c00:`You are at the <strong>starting line of learning</strong>. With the right knowledge, both yield and quality can improve greatly.`,
+      a90:[{icon:'🎓',t:'Share knowledge locally',b:'Take on a mentor role at local study meetings and field training sessions to pass on techniques to younger farmers.'},{icon:'📊',t:'Try data-driven farming',b:'Record yield, weather and fertilisation each season and analyse for optimal conditions to reach the next level.'},{icon:'🌐',t:'Trial new varieties',b:'Introduce blight-resistant, high-yield improved varieties in trial plots to discover the best techniques for your area.'}],
+      a00:[{icon:'📖',t:'Start from the basics',b:'Learning soil pH management and how to use certified seed alone can make a big difference to yield. Consult your local agricultural office.'},{icon:'👨‍🌾',t:'Visit experienced farmers',b:'Ask to observe an experienced farmer\'s field and learn by watching actual work first-hand.'},{icon:'📱',t:'Practise repeatedly',b:'Repeated practice with this tool will help you absorb knowledge naturally.'}],
+      balance:{icon:'🎯',t:'Keep balanced progress',b:'Good results across all categories. Keep putting knowledge into practice and aim for an even higher score.'},
+    }
+  };
+  const cm = CM[lang];
   if (score >= 90) {
-    comment = `<strong>卓越した技術力</strong>をお持ちです。${totalAll}問中${totalOk}問の正解は、ジャガイモ栽培の全工程を高いレベルで理解していることを証明しています。この知識を地域農業の発展に役立てましょう。農業研修のリーダー・ファシリテーターとして活躍できる段階です。`;
-    advice = [
-      {icon:'🎓', t:'知識を地域へ', b:'地域の勉強会や圃場研修でメンター役を担い、若い農家に技術を伝えましょう。教えることで自分の理解もさらに深まります。'},
-      {icon:'📊', t:'データ農業への挑戦', b:'各シーズンの収量・気象・施肥を記録し、最適条件を科学的に分析することで次のレベルへ進めます。'},
-      {icon:'🌐', t:'新品種・有機農業の試験導入', b:'疫病耐性・高収量の改良品種や有機栽培技術を試験区で導入し、地域に合う最適技術を開拓してください。'},
-    ];
+    comment = cm.c90; advice = cm.a90;
   } else if (score >= 80) {
-    comment = `<strong>優れた技術基盤</strong>を持っています。ほぼすべての分野で実践的な知識が備わっており、安定した栽培が期待できます。いくつかの専門的な知識をさらに深めることで、収量と品質を一段と引き上げられます。`;
-    advice = buildWeakAdvice(catSc, 2);
+    comment = cm.c80; advice = buildWeakAdvice(catSc, 2);
   } else if (score >= 70) {
-    comment = `<strong>良好な基礎知識</strong>があります。多くの場面で適切な判断ができていますが、一部のカテゴリでの知識の深化が収量向上につながります。弱点を重点的に学ぶことで、上位レベルへのステップアップが可能です。`;
-    advice = buildWeakAdvice(catSc, 3);
+    comment = cm.c70; advice = buildWeakAdvice(catSc, 3);
   } else if (score >= 60) {
-    comment = `基礎を固めている途中です。<strong>今知識を積み重ねることで、収量を大きく改善できる可能性があります。</strong>スコアが低かったカテゴリから優先的に学習を進めましょう。農業普及員や先輩農家への相談も非常に効果的です。`;
-    advice = buildWeakAdvice(catSc, 3);
+    comment = cm.c60; advice = buildWeakAdvice(catSc, 3);
   } else {
-    comment = `学びの<strong>スタートラインに立っています</strong>。現時点での知識は発展途上ですが、正しい知識を身につければ収量・品質ともに大きく改善できます。まず土壌管理と種芋準備の基礎から一歩ずつ取り組みましょう。`;
-    advice = [
-      {icon:'📖', t:'基礎から始めよう', b:'「土壌pH管理」と「認定種芋の使い方」の2点を学ぶだけで収量が大きく変わります。農業普及所に相談してみましょう。'},
-      {icon:'👨‍🌾', t:'先輩農家の圃場を訪問', b:'経験豊富な農家の畑を見学させてもらい、実際の作業を目で見て学ぶことが最短ルートです。'},
-      {icon:'📱', t:'ゲームで楽しく復習', b:'「じゃがいもマスター」ゲームで繰り返し練習することで、知識が自然と身につきます。'},
-    ];
+    comment = cm.c00; advice = cm.a00;
   }
 
   document.getElementById('overallComment').innerHTML = `<p>${comment}</p>`;
 
-  // Detail table (evaluation-system style)
+  // Detail table
   const tbl = document.getElementById('reportTable');
-  tbl.innerHTML = '<tr><th>評価項目</th><th>正解数</th><th>スコア</th><th>進捗バー</th></tr>';
+  tbl.innerHTML = `<tr><th>${u.tblItem}</th><th>${u.tblCorrect}</th><th>${u.tblScore}</th><th>${u.tblBar}</th></tr>`;
   S.selCats.forEach(cat => {
     const sc = catSc[cat];
     const pct = sc.total > 0 ? Math.round(sc.ok/sc.total*100) : 0;
     const meta = DB[cat];
     const color = getColor(pct);
     tbl.innerHTML += `<tr>
-      <td><span style="margin-right:5px">${meta.icon}</span>${meta.name}</td>
+      <td><span style="margin-right:5px">${meta.icon}</span>${tl(meta.name)}</td>
       <td style="text-align:center">${sc.ok}/${sc.total}</td>
-      <td style="font-weight:700;color:${color}">${pct}点</td>
+      <td style="font-weight:700;color:${color}">${pct}</td>
       <td style="min-width:60px"><div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%;background:${color}"></div></div></td>
     </tr>`;
   });
@@ -934,8 +1298,8 @@ function showResults() {
     bc.innerHTML += `
       <div class="bar-row">
         <div class="bar-row-head">
-          <span class="bar-label">${meta.icon} ${meta.name}</span>
-          <span class="bar-pct">${pct}点</span>
+          <span class="bar-label">${meta.icon} ${tl(meta.name)}</span>
+          <span class="bar-pct">${pct}</span>
         </div>
         <div class="bar-track">
           <div class="bar-fill" style="background:${meta.color}" data-w="${pct}"></div>
@@ -953,7 +1317,7 @@ function showResults() {
   // Email setup
   if (S.email) {
     document.getElementById('emailCard').style.display = 'block';
-    document.getElementById('emailNote').textContent = `送信先: ${S.email}`;
+    document.getElementById('emailNote').textContent = S.email;
   } else {
     document.getElementById('emailCard').style.display = 'none';
   }
@@ -975,23 +1339,55 @@ function getColor(pct) {
 
 function buildWeakAdvice(catSc, maxN) {
   const TIPS = {
-    soil:       {icon:'🌱', t:'土壌管理を強化', b:'pH測定キットを入手し毎作前に確認しましょう。石灰・堆肥施用でpH改善と有機物補充が同時にできます。'},
-    seed:       {icon:'🌿', t:'種芋の準備を見直す', b:'認定種芋の購入と、植え付け2〜3週前からの催芽処理を習慣化しましょう。切断後の乾燥も腐敗防止に必須です。'},
-    planting:   {icon:'🪣', t:'植え付け技術の改善', b:'適切な深さ（8〜12cm）と株間（30cm×70cm）を守ることで、いもの数と大きさが安定します。'},
-    fertilizer: {icon:'💧', t:'施肥バランスの最適化', b:'カリウム施用量を見直しましょう。施肥記録をつけることで過不足が分かり、次作への改善につながります。'},
-    pest:       {icon:'🐛', t:'病害虫の早期発見と予防', b:'疫病には予防的殺菌剤散布を。週1回の圃場巡回でアブラムシ・疫病の初期兆候を早期発見しましょう。'},
-    hilling:    {icon:'⛏️', t:'培土・除草管理の徹底', b:'出芽後2〜3週に培土を実施し緑化防止といも数増加を達成しましょう。マルチングで除草労力も削減できます。'},
-    harvest:    {icon:'🥔', t:'収穫適期の見極め', b:'地上部の自然枯死を待ってから収穫しましょう。丁寧な取り扱いで打撲傷を最小化し、腐敗ロスを減らせます。'},
-    storage:    {icon:'🏚️', t:'貯蔵環境の改善', b:'収穫後のキュアリング（15〜20℃・1〜2週間）と、冷涼暗所での貯蔵を実践しましょう。出荷前の選別も価格向上につながります。'},
-    marketing:  {icon:'💰', t:'販売戦略を強化しよう', b:'収穫前にラジオや農業普及員で市場価格を確認する習慣をつけましょう。農家グループで共同出荷することで交渉力が大きく上がります。'},
-    learning:   {icon:'📚', t:'学習習慣を身につけよう', b:'農業普及員への相談・農家グループの勉強会への参加を定期的に行いましょう。小さな試験区で新技術を試し、栽培日誌に記録することが成長の近道です。'},
+    ja: {
+      soil:      {icon:'🌱', t:'土壌管理を強化', b:'pH測定キットを入手し毎作前に確認しましょう。石灰・堆肥施用でpH改善と有機物補充が同時にできます。'},
+      seed:      {icon:'🌿', t:'種芋の準備を見直す', b:'認定種芋の購入と催芽処理を習慣化しましょう。切断後の乾燥も腐敗防止に必須です。'},
+      planting:  {icon:'🪣', t:'植え付け技術の改善', b:'適切な深さ（8〜12cm）と株間（30cm×70cm）を守ることで、いもの数と大きさが安定します。'},
+      fertilizer:{icon:'💧', t:'施肥バランスの最適化', b:'カリウム施用量を見直しましょう。施肥記録をつけることで過不足が分かります。'},
+      pest:      {icon:'🐛', t:'病害虫の早期発見と予防', b:'疫病には予防的殺菌剤散布を。週1回の圃場巡回で初期兆候を早期発見しましょう。'},
+      hilling:   {icon:'⛏️', t:'培土・除草管理の徹底', b:'出芽後2〜3週に培土を実施し緑化防止といも数増加を達成しましょう。'},
+      harvest:   {icon:'🥔', t:'収穫適期の見極め', b:'地上部の自然枯死を待ってから収穫しましょう。丁寧な取り扱いで打撲傷を最小化できます。'},
+      storage:   {icon:'🏚️', t:'貯蔵環境の改善', b:'収穫後のキュアリング（15〜20℃・1〜2週間）と冷涼暗所での貯蔵を実践しましょう。'},
+      marketing: {icon:'💰', t:'販売戦略を強化しよう', b:'収穫前にラジオや農業普及員で市場価格を確認する習慣をつけましょう。'},
+      learning:  {icon:'📚', t:'学習習慣を身につけよう', b:'農業普及員への相談・農家グループの勉強会への参加を定期的に行いましょう。'},
+    },
+    ne: {
+      soil:      {icon:'🌱', t:'माटो व्यवस्थापन सुधार', b:'pH परीक्षण किट राखेर हरेक सिजन अघि जाँच गर्नुहोस्। चूना र कम्पोस्टले pH र जैविक पदार्थ सँगै सुध्रिन्छ।'},
+      seed:      {icon:'🌿', t:'बीउ तयारी पुनरावलोकन', b:'प्रमाणित बीउ खरिद र रोपाईभन्दा २–३ हप्ता अगाडि अङ्कुरण गर्ने बानी बसाल्नुहोस्। काटेपछि सुकाउनु पनि आवश्यक छ।'},
+      planting:  {icon:'🪣', t:'रोपाई प्रविधि सुधार', b:'उचित गहिराइ (८–१२ से.मि.) र दूरी (३०×७० से.मि.) पालना गर्दा कन्दको संख्या र आकार स्थिर हुन्छ।'},
+      fertilizer:{icon:'💧', t:'मल सन्तुलन अनुकूल बनाउनुहोस्', b:'पोटासियम प्रयोग पुनरावलोकन गर्नुहोस्। मल अभिलेखले अभाव वा बढी भएको थाहा पाउन मद्दत गर्छ।'},
+      pest:      {icon:'🐛', t:'रोग किराको प्रारम्भिक पहिचान', b:'झुलसा रोगका लागि निवारक ढुसीनाशक छर्नुहोस्। हप्तामा एकपटक खेत हेर्दा प्रारम्भिक लक्षण भेटिन्छ।'},
+      hilling:   {icon:'⛏️', t:'माटो थुपार्ने र झार नियन्त्रण', b:'उम्रेको २–३ हप्तामा माटो थुपार्दा हरियो हुन रोकिन्छ र कन्द बढ्छ।'},
+      harvest:   {icon:'🥔', t:'कटाइको सही समय', b:'माथिल्लो भाग प्राकृतिक रूपमा मरेपछि काट्नुहोस्। सावधानीपूर्वक ह्यान्डलिङले चोट कम हुन्छ।'},
+      storage:   {icon:'🏚️', t:'भण्डारण वातावरण सुधार', b:'कटाइपछि क्युरिङ (१५–२०°C, १–२ हप्ता) र चिसो अँध्यारो भण्डारण अभ्यास गर्नुहोस्।'},
+      marketing: {icon:'💰', t:'बिक्री रणनीति सुदृढ', b:'रेडियो वा विस्तारकर्ताबाट कटाइअघि बजार मूल्य बुझ्ने बानी बसाल्नुहोस्।'},
+      learning:  {icon:'📚', t:'सिकाइ बानी बसाल्नुहोस्', b:'कृषि विस्तारकर्तासँग नियमित परामर्श र किसान समूह बैठकमा भाग लिनुहोस्।'},
+    },
+    en: {
+      soil:      {icon:'🌱', t:'Strengthen soil management', b:'Get a pH test kit and check before each crop. Applying lime and compost improves pH and organic matter simultaneously.'},
+      seed:      {icon:'🌿', t:'Review seed preparation', b:'Make buying certified seed and sprouting 2–3 weeks before planting a habit. Drying cut surfaces is also essential to prevent rot.'},
+      planting:  {icon:'🪣', t:'Improve planting technique', b:'Maintaining proper depth (8–12 cm) and spacing (30×70 cm) stabilises tuber number and size.'},
+      fertilizer:{icon:'💧', t:'Optimise fertiliser balance', b:'Review your potassium application rate. Keeping fertiliser records reveals deficiencies and excesses for the next crop.'},
+      pest:      {icon:'🐛', t:'Early pest and disease detection', b:'Apply preventive fungicide for blight. Weekly field inspections allow early detection of aphids and blight symptoms.'},
+      hilling:   {icon:'⛏️', t:'Thorough hilling and weeding', b:'Hill up 2–3 weeks after emergence to prevent greening and increase tuber numbers.'},
+      harvest:   {icon:'🥔', t:'Judge the right harvest time', b:'Wait for natural die-back above ground before harvesting. Careful handling minimises bruising and rot losses.'},
+      storage:   {icon:'🏚️', t:'Improve storage conditions', b:'Practice curing after harvest (15–20°C, 1–2 weeks) and store in a cool dark place.'},
+      marketing: {icon:'💰', t:'Strengthen your sales strategy', b:'Make a habit of checking market prices from radio or extension workers before harvest.'},
+      learning:  {icon:'📚', t:'Build a learning habit', b:'Regularly consult extension workers and attend farmer group meetings to keep improving.'},
+    }
   };
+  const BALANCE = {
+    ja: {icon:'🎯', t:'バランスよく継続', b:'全カテゴリで良好な結果です。知識を実践に活かしながら、さらなる高得点を目指しましょう。'},
+    ne: {icon:'🎯', t:'सन्तुलित रूपमा जारी राख्नुहोस्', b:'सबै श्रेणीमा राम्रो नतिजा आयो। ज्ञानलाई व्यवहारमा उतार्दै थप अंकको लागि अभ्यास जारी राख्नुहोस्।'},
+    en: {icon:'🎯', t:'Keep balanced progress', b:'Good results across all categories. Keep putting knowledge into practice and aim for an even higher score.'},
+  };
+  const tips = TIPS[lang] || TIPS.ja;
   const weak = Object.entries(catSc)
     .filter(([c, sc]) => sc.total > 0 && (sc.ok/sc.total) < 0.7)
     .sort((a,b) => (a[1].ok/a[1].total) - (b[1].ok/b[1].total))
     .slice(0, maxN);
-  if (weak.length === 0) return [{icon:'🎯', t:'バランスよく継続', b:'全カテゴリで良好な結果です。知識を実践に活かしながら、さらなる高得点を目指して復習を続けましょう。'}];
-  return weak.map(([cat]) => TIPS[cat]);
+  if (weak.length === 0) return [BALANCE[lang] || BALANCE.ja];
+  return weak.map(([cat]) => tips[cat]);
 }
 
 // ---- send mail ----
@@ -1001,23 +1397,20 @@ function sendMail() {
   S.selCats.forEach(c => {
     const sc = R.catSc[c];
     const pct = sc.total > 0 ? Math.round(sc.ok/sc.total*100) : 0;
-    catLines += DB[c].icon + ' ' + DB[c].name + ': ' + pct + '点 (' + sc.ok + '/' + sc.total + '問)\n';
+    catLines += DB[c].icon + ' ' + tl(DB[c].name) + ': ' + pct + ' (' + sc.ok + '/' + sc.total + ')\n';
   });
-  const sub = encodeURIComponent('【じゃがいもマスター】農家技術評価レポート' + (S.name?' — '+S.name:''));
+  const u = UI[lang];
+  const sub = encodeURIComponent(u.appTitle + ' — ' + (S.name || 'Assessment Report'));
   const body = encodeURIComponent(
 `━━━━━━━━━━━━━━━━━━━━
-ジャガいもマスター 技術評価レポート
-${S.name ? '農家名: '+S.name : ''}${S.village ? '　地区: '+S.village : ''}
+${u.appTitle}
+${S.name ? S.name : ''}${S.village ? '  '+S.village : ''}
 ━━━━━━━━━━━━━━━━━━━━
 
-【総合スコア】 ${R.score}点 / 100点満点
-【評価レベル】 ${R.lvEmoji} ${R.lv}
+${R.score} / 100
+${R.lvEmoji} ${R.lv}
 
-【カテゴリ別スコア】
 ${catLines}
-━━━━━━━━━━━━━━━━━━━━
-このレポートは「じゃがいもマスター〜ネパール農家技術評価ツール」により生成されました。
-診断結果をもとに栽培技術の向上に取り組んでください。
 ━━━━━━━━━━━━━━━━━━━━`);
 
   document.getElementById('btnMail').disabled = true;
@@ -1025,7 +1418,7 @@ ${catLines}
     window.location.href = `mailto:${S.email}?subject=${sub}&body=${body}`;
     document.getElementById('sentNotice').classList.add('show');
     document.getElementById('btnMail').style.display = 'none';
-    toast('📬 メールアプリを開きました');
+    toast(UI[lang].toastMail);
   }, 500);
 }
 
@@ -1036,22 +1429,25 @@ function showScreen(id) {
   window.scrollTo(0,0);
 }
 function confirmBack() {
-  if (confirm('評価を中断して最初に戻りますか？')) showScreen('s-start');
+  if (confirm(UI[lang].backConfirm)) { showScreen('s-start'); applyLang(); }
 }
 function restartAll() {
   S = {name:'',village:'',email:'',selCats:[],allQs:[],idx:0,answers:[],lock:false};
   ['inp-name','inp-village','inp-email'].forEach(id => document.getElementById(id).value='');
-  document.querySelectorAll('#catGrid .cat-card').forEach(e => e.classList.add('on'));
   document.getElementById('sentNotice').classList.remove('show');
   document.getElementById('btnMail').style.display='block';
   document.getElementById('btnMail').disabled=false;
   showScreen('s-start');
+  applyLang();
 }
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// initialise on load
+applyLang();
 </script>
 </body>
 </html>
